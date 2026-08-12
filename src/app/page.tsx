@@ -6,11 +6,12 @@ import Preloader from "@/components/chrome/Preloader";
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Technology from "@/components/sections/Technology";
+import Capabilities from "@/components/sections/Capabilities";
+import Impact from "@/components/sections/Impact";
 import { NAV } from "@/lib/constants";
 
-const PENDING = NAV.filter(
-  (item) => !["about", "technology"].includes(item.id),
-);
+const BUILT = ["about", "technology", "capabilities", "impact"];
+const PENDING = NAV.filter((item) => !BUILT.includes(item.id));
 
 export default function Home() {
   const [heroReady, setHeroReady] = useState(false);
@@ -25,6 +26,8 @@ export default function Home() {
       <Hero start={heroReady} />
       <About />
       <Technology />
+      <Capabilities />
+      <Impact />
 
       {PENDING.map((section) => (
         <section

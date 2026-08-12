@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TARGET_BUILDERS, mulberry32 } from "@/lib/particles/targets";
 import {
   measureMorphBounds,
@@ -96,9 +97,20 @@ export default function ParticleField({
 
   useEffect(() => {
     measureMorphBounds();
+
+    // The canvas mounting can change layout; re-measure once it has painted so
+    // pinned sections and morph boundaries agree.
+    const raf = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      measureMorphBounds();
+    });
+
     const onResize = () => measureMorphBounds();
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   useFrame((_, delta) => {
