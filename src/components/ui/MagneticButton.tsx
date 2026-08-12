@@ -13,8 +13,20 @@ type MagneticButtonProps = {
   className?: string;
 };
 
-const RADIUS = 90;
-const STRENGTH = 0.28;
+const RADIUS = 55;
+const STRENGTH = 0.18;
+/** Hard cap per axis: a button can never travel far enough to reach a neighbour. */
+const MAX_SHIFT = 12;
+const LABEL_PARALLAX = 0.35;
+
+const clamp = (value: number, limit: number) =>
+  Math.min(Math.max(value, -limit), limit);
+
+/**
+ * Only one button may be magnetic at a time. Entering a button sends whichever
+ * one was active back to rest, so a pair can never both lean inward and collide.
+ */
+let activeRelease: (() => void) | null = null;
 
 export default function MagneticButton({
   children,
@@ -47,6 +59,12 @@ export default function MagneticButton({
 
     let engaged = false;
 
+    const release = () => {
+      engaged = false;
+      gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1,0.4)" });
+      gsap.to(label, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1,0.4)" });
+    };
+
     const onPointerMove = (event: PointerEvent) => {
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
@@ -54,35 +72,38 @@ export default function MagneticButton({
       const dx = event.clientX - cx;
       const dy = event.clientY - cy;
 
-      // Distance to the element's edge, not its center.
+      // Distance to the element’s edge, not its center.
       const ox = Math.max(Math.abs(dx) - rect.width / 2, 0);
       const oy = Math.max(Math.abs(dy) - rect.height / 2, 0);
       const distance = Math.hypot(ox, oy);
 
       if (distance > RADIUS) {
         if (engaged) {
-          engaged = false;
-          gsap.to(el, { x: 0, y: 0, duration: 0.9, ease: "elastic.out(1,0.4)" });
-          gsap.to(label, {
-            x: 0,
-            y: 0,
-            duration: 0.9,
-            ease: "elastic.out(1,0.4)",
-          });
+          if (activeRelease === release) activeRelease = null;
+          release();
         }
         return;
       }
 
-      engaged = true;
-      xTo(dx * STRENGTH);
-      yTo(dy * STRENGTH);
-      labelX(dx * STRENGTH * 0.5);
-      labelY(dy * STRENGTH * 0.5);
-    };
+      if (!engaged) {
+        // Take ownership: send the previously magnetic button home first.
+        if (activeRelease && activeRelease !== release) activeRelease();
+        activeRelease = release;
+        engaged = true;
+      }
 
+      const offsetX = clamp(dx * STRENGTH, MAX_SHIFT);
+      const offsetY = clamp(dy * STRENGTH, MAX_SHIFT);
+
+      xTo(offsetX);
+      yTo(offsetY);
+      labelX(offsetX * LABEL_PARALLAX);
+      labelY(offsetY * LABEL_PARALLAX);
+    };
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
+      if (activeRelease === release) activeRelease = null;
       gsap.killTweensOf([el, label]);
       gsap.set([el, label], { x: 0, y: 0 });
     };

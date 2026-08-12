@@ -102,7 +102,8 @@ export default function Hero({ start = true }: { start?: boolean }) {
             structure in days, not years.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          {/* gap-6 = 24px: two buttons capped at 12px each can never close it */}
+          <div className="mt-10 flex flex-wrap items-center gap-6">
             <MagneticButton href="#about" variant="primary">
               Explore the platform
             </MagneticButton>
