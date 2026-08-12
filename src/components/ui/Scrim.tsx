@@ -37,12 +37,19 @@ export default function Scrim({
           bleed,
         )}
         style={{
-          background:
-            "radial-gradient(ellipse at center, color-mix(in srgb, var(--color-void) 75%, transparent) 0%, color-mix(in srgb, var(--color-void) 55%, transparent) 45%, transparent 78%)",
-          maskImage:
-            "radial-gradient(ellipse at center, #000 0%, #000 55%, transparent 85%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at center, #000 0%, #000 55%, transparent 85%)",
+          /*
+            Multi-stop so the falloff is gradual and the scrim never reads as
+            an oval. A mask on top of this produced a second, harder edge —
+            the gradient alone does the whole job.
+          */
+          background: [
+            "radial-gradient(ellipse at center,",
+            "color-mix(in srgb, var(--color-void) 75%, transparent) 0%,",
+            "color-mix(in srgb, var(--color-void) 62%, transparent) 30%,",
+            "color-mix(in srgb, var(--color-void) 40%, transparent) 50%,",
+            "color-mix(in srgb, var(--color-void) 18%, transparent) 68%,",
+            "transparent 85%)",
+          ].join(" "),
         }}
       />
       <div className={cn("relative z-10", contentClassName)}>{children}</div>

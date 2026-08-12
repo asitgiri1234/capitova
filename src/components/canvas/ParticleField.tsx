@@ -14,6 +14,27 @@ import {
 import { particlesVertexShader } from "./shaders/particles.vert";
 import { particlesFragmentShader } from "./shaders/particles.frag";
 
+const TARGET_NAMES = [
+  "helix",
+  "proteinFold",
+  "network",
+  "cellCluster",
+  "constellation",
+  "singularity",
+];
+
+/** Dev-only: report each morph boundary as it is crossed. */
+let lastLoggedStage = -1;
+function logProgress(progress: number) {
+  if (process.env.NODE_ENV === "production") return;
+  const stage = Math.round(progress);
+  if (stage === lastLoggedStage) return;
+  lastLoggedStage = stage;
+  console.info(
+    `[capitova] uProgress ${progress.toFixed(2)} → ${TARGET_NAMES[stage] ?? "?"}`,
+  );
+}
+
 const MINT = new THREE.Color("#7bffc4");
 const VIOLET = new THREE.Color("#a78bfa");
 // Inverted palette: dark motes that stay dense against bone.
@@ -124,14 +145,17 @@ export default function ParticleField({
   useFrame((_, delta) => {
     if (!activeRef.current) return;
 
-    // Reduced motion: a still helix — no time, no morph, no cursor. It is held
-    // at the table's quietest opacity so it stays legible behind every
-    // section, since it never recedes on its own.
+    // Reduced motion: no autonomous animation — no time drift, no cursor, no
+    // easing. The shape still tracks the section directly, so each section
+    // shows its own target rather than a helix behind the whole page.
     if (reducedMotion) {
-      uniforms.uProgress.value = 0;
+      const target = morphProgressFromScroll(window.scrollY);
+      uniforms.uProgress.value = target;
       uniforms.uTime.value = 0;
       uniforms.uMouseStrength.value = 0;
-      uniforms.uOpacity.value = 0.3;
+      fieldState.progress = target;
+      uniforms.uOpacity.value = sampleComposition(target).opacity;
+      logProgress(target);
       return;
     }
 
@@ -143,6 +167,7 @@ export default function ParticleField({
     // Publish the smoothed value so the rig frames the field from the same
     // number the shader is morphing with.
     fieldState.progress = uniforms.uProgress.value;
+    logProgress(uniforms.uProgress.value);
 
     uniforms.uMouse.value.lerp(pointerTarget.current, 0.06);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { getScrollState } from "@/lib/scrollStore";
@@ -37,18 +37,32 @@ function Rig({
   const frameRef = useRef<THREE.Group>(null);
   const spinRef = useRef<THREE.Group>(null);
 
+  // frameloop is "demand" under reduced motion, so scrolling must explicitly
+  // request a frame or the field would never update its shape.
+  const invalidate = useThree((state) => state.invalidate);
+
+  useEffect(() => {
+    if (!reducedMotion) return;
+    const onScroll = () => invalidate();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [invalidate, reducedMotion]);
+
   useFrame(({ camera }, delta) => {
     if (!activeRef.current) return;
 
-    // Reduced motion holds the field static, so park it off to one side and
-    // small rather than letting it sit centred behind the copy.
+    const composition = sampleComposition(fieldState.progress);
+
+    // Reduced motion: framing snaps to the section, no easing, no spin.
     if (reducedMotion) {
-      frameRef.current?.position.setX(-5);
-      frameRef.current?.scale.setScalar(0.75);
+      frameRef.current?.position.setX(composition.x);
+      frameRef.current?.scale.setScalar(composition.scale);
       return;
     }
-
-    const composition = sampleComposition(fieldState.progress);
 
     if (frameRef.current) {
       const frame = frameRef.current;
@@ -65,7 +79,6 @@ function Rig({
     const targetZ = 16 + getScrollState().progress * 6;
     camera.position.z += (targetZ - camera.position.z) * 0.05;
   });
-
   return (
     <group ref={frameRef}>
       <group ref={spinRef}>

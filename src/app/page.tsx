@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import CanvasLayer from "@/components/canvas/CanvasLayer";
-import InversionPanel from "@/components/chrome/InversionPanel";
 import Preloader from "@/components/chrome/Preloader";
 import Footer from "@/components/chrome/Footer";
 import Hero from "@/components/sections/Hero";
@@ -17,10 +16,9 @@ export default function Home() {
 
   return (
     <>
-      {/* z-0: the bone panel that wipes in for the final inversion */}
-      <InversionPanel />
+      
 
-      {/* z-1: mounted once, never unmounted — morphs behind every section */}
+      {/* z-0: mounted once, never unmounted — morphs behind every section */}
       <CanvasLayer />
 
       <Preloader onComplete={() => setHeroReady(true)} />

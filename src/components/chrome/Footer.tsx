@@ -65,7 +65,7 @@ function UtcClock() {
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 border-t border-void/15 text-void">
+    <footer className="relative z-10 border-t border-void/15 bg-bone text-void">
       <div className="mx-auto w-full max-w-7xl container-page pt-20">
         <div className="flex flex-wrap justify-between gap-12">
           <div className="text-2xl font-medium tracking-[-0.02em]">

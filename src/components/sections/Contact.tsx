@@ -1,9 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAnimate } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import SplitText from "@/components/ui/SplitText";
+import { setScrollState } from "@/lib/scrollStore";
 import { cn } from "@/lib/utils";
 
 const CHANNELS = [
@@ -13,14 +16,71 @@ const CHANNELS = [
 ] as const;
 
 export default function Contact() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    const panel = panelRef.current;
+    if (!section || !panel) return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      if (reducedMotion) {
+        gsap.set(panel, { clipPath: "inset(0% 0% 0% 0%)" });
+      } else {
+        gsap.fromTo(
+          panel,
+          { clipPath: "inset(100% 0% 0% 0%)" },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 85%",
+              end: "top 20%",
+              scrub: 0.8,
+            },
+          },
+        );
+      }
+
+      // The HUD flips only once Contact genuinely owns the viewport.
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 45%",
+        onEnter: () => setScrollState({ inverted: true }),
+        onLeaveBack: () => setScrollState({ inverted: false }),
+      });
+    }, section);
+
+    return () => {
+      ctx.revert();
+      setScrollState({ inverted: false });
+    };
+  }, [reducedMotion]);
 
   return (
     <section
+      ref={sectionRef}
       id="contact"
-      className="relative z-10 flex min-h-screen flex-col justify-center container-page py-32 text-void"
+      className="relative z-10 container-page flex min-h-screen flex-col justify-center py-32 text-void"
     >
-      <div className="mx-auto w-full max-w-5xl">
+      {/*
+        Bone lives inside the section, clipped to its own box. A fixed,
+        viewport-sized panel bled the light background over Impact while
+        Impact was still on screen.
+      */}
+      <div
+        ref={panelRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0 bg-bone"
+        style={{ clipPath: "inset(100% 0% 0% 0%)" }}
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-5xl">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-void/50 uppercase">
           <span aria-hidden="true" className="block h-px w-12 bg-void" />
           05 / Contact
