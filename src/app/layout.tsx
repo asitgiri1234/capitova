@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Geist_Mono } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif, Geist_Mono } from "next/font/google";
 import { SITE } from "@/lib/constants";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import Hud from "@/components/chrome/Hud";
@@ -9,6 +9,14 @@ const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["italic"],
   display: "swap",
 });
 
@@ -45,7 +53,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${instrumentSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
+    >
       <body className="bg-void text-bone antialiased">
         <a
           href="#main"

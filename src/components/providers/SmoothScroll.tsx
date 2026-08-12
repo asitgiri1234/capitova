@@ -7,6 +7,7 @@ import Lenis from "lenis";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { setLenis } from "@/lib/lenis";
 import { resetScrollState, setScrollState } from "@/lib/scrollStore";
+import { measureMorphBounds } from "@/lib/particles/morphProgress";
 
 export default function SmoothScroll({
   children,
@@ -17,6 +18,18 @@ export default function SmoothScroll({
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+
+    // Layout shifts once webfonts swap in, and pinned triggers cache offsets.
+    let fontsCancelled = false;
+    document.fonts?.ready.then(() => {
+      if (fontsCancelled) return;
+      ScrollTrigger.refresh();
+      measureMorphBounds();
+    });
+
+    // Keep the particle morph boundaries in sync with pin-driven layout.
+    const onRefresh = () => measureMorphBounds();
+    ScrollTrigger.addEventListener("refresh", onRefresh);
 
     // Reduced motion: no Lenis at all, native scrolling stays untouched.
     // The HUD readout still needs progress, so read it off the window.
@@ -37,6 +50,8 @@ export default function SmoothScroll({
       window.addEventListener("scroll", onNativeScroll, { passive: true });
       window.addEventListener("resize", onNativeScroll);
       return () => {
+        fontsCancelled = true;
+        ScrollTrigger.removeEventListener("refresh", onRefresh);
         window.removeEventListener("scroll", onNativeScroll);
         window.removeEventListener("resize", onNativeScroll);
       };
@@ -62,6 +77,8 @@ export default function SmoothScroll({
     gsap.ticker.lagSmoothing(0);
 
     return () => {
+      fontsCancelled = true;
+      ScrollTrigger.removeEventListener("refresh", onRefresh);
       lenis.off("scroll", onScroll);
       gsap.ticker.remove(raf);
       gsap.ticker.lagSmoothing(500, 33);

@@ -64,18 +64,48 @@ on `<html>`; `@theme` maps them onto Tailwind's font namespace.
 ```
 src/
   app/
-    layout.tsx        root layout: fonts, metadata, skip link, <main id="main">
+    layout.tsx        root layout: fonts, metadata, skip link, HUD, SmoothScroll, <main id="main">
     globals.css       @theme tokens, base element styles, a11y rules
-    page.tsx          landing page — composes section components
+    page.tsx          landing page — canvas layer, preloader, sections
   components/
+    canvas/           the persistent WebGL field
+      CanvasLayer.tsx   fixed z-0 host; dynamic-imports Scene (ssr: false)
+      Scene.tsx         <Canvas>, adaptive particle budget, rig, frameloop gating
+      ParticleField.tsx one Points, one draw call, six morph targets
+      shaders/          vertex + fragment sources as typed strings
+    chrome/           persistent overlays (HUD, preloader)
+    providers/        SmoothScroll (Lenis + gsap.ticker + ScrollTrigger sync)
     sections/         one file per page section, self-contained
-    ui/               reusable primitives (buttons, reveals, rules)
+    ui/               reusable primitives (Reveal, SplitText, MagneticButton, Counter)
   hooks/
     useReducedMotion.ts   SSR-safe prefers-reduced-motion boolean
+    useActiveSection.ts   ScrollTrigger-driven active section id
   lib/
     constants.ts      SITE metadata, NAV section list
+    lenis.ts          shared Lenis handle + scrollToSection()
+    scrollStore.ts    useSyncExternalStore store: progress, velocity, activeSection
     utils.ts          cn() — clsx + tailwind-merge
+    particles/
+      targets.ts        seeded target-shape generators (helix … singularity)
+      morphProgress.ts  section offsets → uProgress 0–5
 ```
+
+### Scroll architecture
+
+Lenis is created once in `SmoothScroll` and driven from `gsap.ticker` — never from a
+bare `requestAnimationFrame`, so Lenis, ScrollTrigger and every tween share one clock.
+`ScrollTrigger.update()` runs on each Lenis scroll event. `ScrollTrigger.refresh()` is
+called after webfonts settle, and morph boundaries are re-measured on every refresh so
+pinned sections do not desync the particle field.
+
+### WebGL rules
+
+- One `THREE.Points`, one geometry, one `ShaderMaterial`, one draw call. Adding a second
+  particle system is a regression, not a feature.
+- Particle count is chosen once on mount from viewport width and `hardwareConcurrency`.
+- The render loop must stop when the tab is hidden (`frameloop="never"`), and reduced
+  motion renders exactly one frame (`frameloop="demand"`) — a still helix.
+- `uProgress` is always lerped toward its target, never snapped. The lag is the effect.
 
 ## Non-negotiable rules
 

@@ -20,6 +20,7 @@
 
   /* typefaces (values injected by next/font in layout.tsx) */
   --font-display: var(--font-instrument-sans);
+  --font-serif: var(--font-instrument-serif);
   --font-mono: var(--font-geist-mono);
 
   /* easing */
