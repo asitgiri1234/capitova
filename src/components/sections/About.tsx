@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import Scrim from "@/components/ui/Scrim";
 import { cn } from "@/lib/utils";
 
 const STATEMENT =
@@ -33,10 +34,14 @@ export default function About() {
       "[data-word][data-plain]",
     );
 
+    const accentWords = section.querySelectorAll<HTMLElement>(
+      "[data-word][data-accent]",
+    );
+
     // Reduced motion: no pin, no scrub — the statement is simply legible.
     if (reducedMotion) {
-      gsap.set(words, { opacity: 1 });
       gsap.set(plainWords, { color: "#EDEAE4" });
+      gsap.set(accentWords, { color: "#7BFFC4" });
       gsap.set(factsRef.current, { opacity: 1, y: 0 });
       return;
     }
@@ -59,10 +64,16 @@ export default function About() {
         },
       });
 
-      tl.to(words, { opacity: 1, duration: 0.4, ease: "none", stagger: { each } }, 0);
+      // Colour, not opacity: the unrevealed state stays a legible grey rather
+      // than dissolving into whatever the particle field is doing behind it.
       tl.to(
         plainWords,
         { color: "#EDEAE4", duration: 0.4, ease: "none", stagger: { each } },
+        0,
+      );
+      tl.to(
+        accentWords,
+        { color: "#7BFFC4", duration: 0.4, ease: "none", stagger: { each } },
         0,
       );
       tl.to(
@@ -81,7 +92,7 @@ export default function About() {
       id="about"
       className="relative z-10 flex min-h-screen flex-col justify-center px-12 py-24"
     >
-      <div className="mx-auto w-full max-w-4xl">
+      <Scrim className="mx-auto w-full max-w-4xl">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
           <span aria-hidden="true" className="block h-px w-12 bg-mint" />
           01 / Innovation
@@ -96,14 +107,17 @@ export default function About() {
                 <span
                   data-word
                   data-plain={accent ? undefined : ""}
-                  style={{ opacity: reducedMotion ? 1 : 0.12 }}
+                  data-accent={accent ? "" : undefined}
                   className={cn(
                     "inline-block",
                     accent
-                      ? "font-serif text-mint italic"
+                      ? cn(
+                          "font-serif italic",
+                          reducedMotion ? "text-mint" : "text-mint/40",
+                        )
                       : reducedMotion
                         ? "text-bone"
-                        : "text-white",
+                        : "text-white/30",
                   )}
                 >
                   {word}
@@ -130,7 +144,7 @@ export default function About() {
             </div>
           ))}
         </div>
-      </div>
+      </Scrim>
     </section>
   );
 }

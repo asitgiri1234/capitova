@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import Counter from "@/components/ui/Counter";
 import Reveal from "@/components/ui/Reveal";
+import Scrim from "@/components/ui/Scrim";
 
 type Card = {
   index: string;
@@ -105,7 +106,10 @@ export default function Technology() {
         ref={trackRef}
         className="flex flex-col gap-8 px-12 py-24 md:h-full md:flex-row md:flex-nowrap md:items-stretch"
       >
-        <div className="flex shrink-0 flex-col justify-center md:w-[clamp(360px,40vw,560px)] md:pr-16">
+        <Scrim
+          className="shrink-0 md:w-[clamp(360px,40vw,560px)] md:pr-16"
+          contentClassName="flex h-full flex-col justify-center"
+        >
           <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
             <span aria-hidden="true" className="block h-px w-12 bg-mint" />
             02 / Research
@@ -113,7 +117,7 @@ export default function Technology() {
           <h2 className="mt-8 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] font-medium tracking-[-0.03em] text-bone">
             Four systems, one pipeline.
           </h2>
-        </div>
+        </Scrim>
 
         {CARDS.map((card, index) => (
           <Reveal
@@ -150,7 +154,7 @@ function TechCard({
         hover: { y: -6, borderColor: "rgba(123,255,196,0.4)" },
       }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="flex h-full w-full flex-col border border-white/10 bg-surface/40 p-8 backdrop-blur-sm md:w-[clamp(320px,32vw,440px)]"
+      className="flex h-full w-full flex-col border border-white/10 bg-surface/75 p-8 backdrop-blur-[3px] md:w-[clamp(320px,32vw,440px)]"
     >
       <motion.span
         variants={{

@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { getScrollState } from "@/lib/scrollStore";
+import { fieldState, sampleComposition } from "@/lib/particles/composition";
 import ParticleField from "./ParticleField";
 
 /** Particle budget by device class, decided once on mount. */
@@ -24,13 +25,33 @@ function Rig({
   reducedMotion: boolean;
   activeRef: React.RefObject<boolean>;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
+  // Outer group carries the per-section framing, inner group spins. Putting
+  // the offset on the spinning group would make the field orbit the origin.
+  const frameRef = useRef<THREE.Group>(null);
+  const spinRef = useRef<THREE.Group>(null);
 
   useFrame(({ camera }, delta) => {
-    if (!activeRef.current || reducedMotion) return;
+    if (!activeRef.current) return;
 
-    if (groupRef.current) {
-      groupRef.current.rotation.y += 0.02 * delta;
+    // Reduced motion holds the field static, so park it off to one side and
+    // small rather than letting it sit centred behind the copy.
+    if (reducedMotion) {
+      frameRef.current?.position.setX(-5);
+      frameRef.current?.scale.setScalar(0.75);
+      return;
+    }
+
+    const composition = sampleComposition(fieldState.progress);
+
+    if (frameRef.current) {
+      const frame = frameRef.current;
+      frame.position.x += (composition.x - frame.position.x) * 0.05;
+      const scale = frame.scale.x + (composition.scale - frame.scale.x) * 0.05;
+      frame.scale.setScalar(scale);
+    }
+
+    if (spinRef.current) {
+      spinRef.current.rotation.y += 0.02 * delta;
     }
 
     // Subtle dolly back as the page scrolls.
@@ -39,8 +60,13 @@ function Rig({
   });
 
   return (
-    <group ref={groupRef}>
-      <ParticleFieldSlot reducedMotion={reducedMotion} activeRef={activeRef} />
+    <group ref={frameRef}>
+      <group ref={spinRef}>
+        <ParticleFieldSlot
+          reducedMotion={reducedMotion}
+          activeRef={activeRef}
+        />
+      </group>
     </group>
   );
 }

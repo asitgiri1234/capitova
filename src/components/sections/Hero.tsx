@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import MagneticButton from "@/components/ui/MagneticButton";
 import SplitText from "@/components/ui/SplitText";
+import Scrim from "@/components/ui/Scrim";
 
 const HEADLINE = "Engineering\nlife at the\nsmallest scale.";
 
@@ -81,7 +82,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
         />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
+      <Scrim className="z-10 mx-auto w-full max-w-7xl">
         <p className="flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-mint uppercase">
           <span aria-hidden="true" className="inline-block h-px w-px bg-mint" />
           Precision Biology / Est. 2019
@@ -123,7 +124,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
             ))}
           </ul>
         </div>
-      </div>
+      </Scrim>
 
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3">
         <span className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase">

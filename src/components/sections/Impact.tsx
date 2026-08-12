@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import Odometer from "@/components/ui/Odometer";
+import Scrim from "@/components/ui/Scrim";
 
 type Stat = {
   value: number;
@@ -150,6 +151,7 @@ export default function Impact() {
       />
 
       <div className="relative mx-auto w-full max-w-7xl px-12">
+        <Scrim className="inline-block">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
           <span aria-hidden="true" className="block h-px w-12 bg-mint" />
           04 / Impact
@@ -157,6 +159,7 @@ export default function Impact() {
         <h2 className="mt-8 text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.03em] text-bone">
           Measured, not claimed.
         </h2>
+        </Scrim>
 
         <div className="mt-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
           {STATS.map((stat, index) => (
@@ -170,6 +173,7 @@ export default function Impact() {
                   : "border-t border-white/10 py-8 md:border-t-0 md:py-0 md:border-l md:pl-10 lg:pr-10"
               }
             >
+              <Scrim bleed="-inset-x-4 -inset-y-8">
               <div className="text-[clamp(3.5rem,8vw,7rem)] leading-none font-medium tracking-[-0.05em] text-bone">
                 <Odometer
                   value={stat.value}
@@ -188,9 +192,10 @@ export default function Impact() {
               <div className="mt-6 font-mono text-xs tracking-[0.2em] text-mint uppercase">
                 {stat.label}
               </div>
-              <p className="mt-3 max-w-[22ch] text-sm text-white/45">
+              <p className="mt-3 max-w-[22ch] text-sm text-white/60">
                 {stat.description}
               </p>
+              </Scrim>
             </div>
           ))}
         </div>
@@ -215,7 +220,7 @@ export default function Impact() {
                 {group.map((partner) => (
                   <span
                     key={partner}
-                    className="flex shrink-0 items-center gap-10 font-mono text-xs tracking-[0.2em] text-white/45 uppercase"
+                    className="flex shrink-0 items-center gap-10 font-mono text-xs tracking-[0.2em] text-white/60 uppercase"
                   >
                     {partner}
                     <span

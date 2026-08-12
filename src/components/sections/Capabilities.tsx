@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import CellDivisionCanvas from "@/components/ui/CellDivisionCanvas";
+import Scrim from "@/components/ui/Scrim";
 import { cn } from "@/lib/utils";
 
 type Tile = {
@@ -78,7 +79,7 @@ export default function Capabilities() {
   return (
     <section id="capabilities" className="relative z-10 px-12 py-32">
       <div className="mx-auto w-full max-w-7xl">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <Scrim contentClassName="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
               <span aria-hidden="true" className="block h-px w-12 bg-mint" />
@@ -93,7 +94,7 @@ export default function Capabilities() {
             roof, so a design decision and its wet-lab answer are days apart
             rather than quarters.
           </p>
-        </div>
+        </Scrim>
 
         {/* gap-px over a white/8 ground: the gaps themselves are the hairlines */}
         <div className="mt-16 grid grid-cols-1 gap-px bg-white/8 md:grid-cols-6 lg:grid-cols-12">

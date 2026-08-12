@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TARGET_BUILDERS, mulberry32 } from "@/lib/particles/targets";
 import { getScrollState } from "@/lib/scrollStore";
+import { fieldState, sampleComposition } from "@/lib/particles/composition";
 import {
   measureMorphBounds,
   morphProgressFromScroll,
@@ -123,19 +124,25 @@ export default function ParticleField({
   useFrame((_, delta) => {
     if (!activeRef.current) return;
 
-    // Reduced motion: a still helix. No time, no morph, no cursor.
+    // Reduced motion: a still helix — no time, no morph, no cursor. It is held
+    // at the table's quietest opacity so it stays legible behind every
+    // section, since it never recedes on its own.
     if (reducedMotion) {
       uniforms.uProgress.value = 0;
       uniforms.uTime.value = 0;
       uniforms.uMouseStrength.value = 0;
+      uniforms.uOpacity.value = 0.3;
       return;
     }
 
     uniforms.uTime.value += delta;
 
-    const target = morphProgressFromScroll(window.scrollY, window.innerHeight);
-    uniforms.uProgress.value +=
-      (target - uniforms.uProgress.value) * 0.06;
+    const target = morphProgressFromScroll(window.scrollY);
+    uniforms.uProgress.value += (target - uniforms.uProgress.value) * 0.06;
+
+    // Publish the smoothed value so the rig frames the field from the same
+    // number the shader is morphing with.
+    fieldState.progress = uniforms.uProgress.value;
 
     uniforms.uMouse.value.lerp(pointerTarget.current, 0.06);
 
@@ -147,7 +154,12 @@ export default function ParticleField({
 
     uniforms.uColorA.value.copy(MINT).lerp(VOID, mix);
     uniforms.uColorB.value.copy(VIOLET).lerp(VIOLET_DEEP, mix);
-    uniforms.uOpacity.value = 0.62 + (0.95 - 0.62) * mix;
+
+    // Opacity comes from the per-section table: strong where copy is sparse,
+    // receding where it is dense. Lerped, never snapped.
+    const composition = sampleComposition(uniforms.uProgress.value);
+    uniforms.uOpacity.value +=
+      (composition.opacity - uniforms.uOpacity.value) * 0.05;
 
     const wantNormal = mix > 0.5;
     if (materialRef.current && wantNormal !== blendIsNormal.current) {
