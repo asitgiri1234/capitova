@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Instrument_Sans, Geist_Mono } from "next/font/google";
 import { SITE } from "@/lib/constants";
+import SmoothScroll from "@/components/providers/SmoothScroll";
+import Hud from "@/components/chrome/Hud";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -51,7 +53,10 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <main id="main">{children}</main>
+        <Hud />
+        <SmoothScroll>
+          <main id="main">{children}</main>
+        </SmoothScroll>
       </body>
     </html>
   );
