@@ -86,7 +86,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       role="status"
       aria-live="polite"
       aria-label="Loading"
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-void px-12"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-void container-page"
       style={{ clipPath: "inset(0% 0% 0% 0%)" }}
     >
       <div className="w-full max-w-xl">
@@ -99,7 +99,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             style={{ transform: `scaleX(${progress / 100})` }}
           />
         </div>
-        <div className="mt-6 text-center font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase">
+        <div className="mt-6 text-center font-mono text-[10px] tracking-[0.3em] text-white/60 uppercase">
           {phaseFor(progress)}
         </div>
       </div>

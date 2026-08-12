@@ -1,18 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { NAV, SITE } from "@/lib/constants";
 import { scrollToSection } from "@/lib/lenis";
 import { useScrollStore } from "@/lib/scrollStore";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { cn } from "@/lib/utils";
+import MobileMenu from "./MobileMenu";
 
 const SECTION_IDS = ["hero", ...NAV.map((item) => item.id)] as const;
 
-const TICK = "pointer-events-none absolute h-[14px] w-[14px] transition-colors duration-[400ms]";
+const TICK =
+  "pointer-events-none absolute hidden h-[14px] w-[14px] transition-colors duration-[400ms] md:block";
 
 export default function Hud() {
   const { progress, activeSection, inverted } = useScrollStore();
   useActiveSection(SECTION_IDS);
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const percent = String(Math.round(progress * 100)).padStart(3, "0");
 
@@ -20,7 +25,7 @@ export default function Hud() {
   const fade = "transition-colors duration-[400ms]";
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-40 select-none">
+    <header className="pointer-events-none fixed inset-0 z-40 select-none">
       {/* corner ticks */}
       <span
         className={cn(
@@ -52,7 +57,7 @@ export default function Hud() {
       />
 
       {/* top-left: wordmark */}
-      <div className="pointer-events-auto absolute top-6 left-12">
+      <div className="pointer-events-auto absolute top-6 left-6 md:left-12">
         <a
           href="#hero"
           onClick={(event) => {
@@ -60,7 +65,7 @@ export default function Hud() {
             scrollToSection("hero");
           }}
           className={cn(
-            "font-mono text-xs tracking-[0.2em] uppercase",
+            "tap-target font-mono text-xs tracking-[0.2em] uppercase",
             fade,
             inverted ? "text-void" : "text-bone",
           )}
@@ -69,12 +74,26 @@ export default function Hud() {
         </a>
       </div>
 
-      {/* top-right: nav */}
+      {/* top-right: full nav on desktop, MENU toggle on mobile */}
       <nav
         aria-label="Sections"
-        className="pointer-events-auto absolute top-6 right-12"
+        className="pointer-events-auto absolute top-6 right-6 md:right-12"
       >
-        <ul className="flex items-center gap-6">
+        <button
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-expanded={menuOpen}
+          aria-haspopup="dialog"
+          className={cn(
+            "tap-target font-mono text-xs tracking-[0.2em] uppercase md:hidden",
+            fade,
+            inverted ? "text-void" : "text-bone",
+          )}
+        >
+          Menu
+        </button>
+
+        <ul className="hidden items-center gap-6 md:flex">
           {NAV.map((item) => {
             const active = activeSection === item.id;
             return (
@@ -87,15 +106,15 @@ export default function Hud() {
                     scrollToSection(item.id);
                   }}
                   className={cn(
-                    "font-mono text-[10px] tracking-[0.2em] uppercase",
+                    "tap-target font-mono text-[10px] tracking-[0.2em] uppercase",
                     fade,
                     inverted
                       ? active
                         ? "text-violet-deep"
-                        : "text-void/50 hover:text-void"
+                        : "text-void/60 hover:text-void"
                       : active
                         ? "text-mint"
-                        : "text-white/50 hover:text-bone",
+                        : "text-white/60 hover:text-bone",
                   )}
                 >
                   {item.label}
@@ -105,10 +124,9 @@ export default function Hud() {
           })}
         </ul>
       </nav>
-
       {/* bottom-left: live scroll readout */}
       <div className="absolute bottom-6 left-12 hidden font-mono text-[10px] tracking-[0.2em] uppercase md:block">
-        <span className={cn(fade, inverted ? "text-void/45" : "text-white/40")}>
+        <span className={cn(fade, inverted ? "text-void/65" : "text-white/60")}>
           Scroll
         </span>
         <span className={cn(fade, inverted ? "text-void/25" : "text-white/20")}>
@@ -144,6 +162,12 @@ export default function Hud() {
           />
         </div>
       </div>
-    </div>
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        activeSection={activeSection}
+        inverted={inverted}
+      />
+    </header>
   );
 }

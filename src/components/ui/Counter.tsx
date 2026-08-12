@@ -61,8 +61,13 @@ export default function Counter({
   }, [decimals, reducedMotion, value]);
 
   return (
-    <span ref={ref} className={cn("tabular-nums", className)}>
-      {display}
+    <span
+      ref={ref}
+      aria-label={format(value, decimals)}
+      aria-live="off"
+      className={cn("tabular-nums", className)}
+    >
+      <span aria-hidden="true">{display}</span>
     </span>
   );
 }

@@ -76,16 +76,25 @@ export default function Odometer({
     return () => ctx.revert();
   }, [decimals, duration, final, reducedMotion, value]);
 
+  // Screen readers get the finished value once; the churning digits are
+  // hidden and the region is explicitly not live.
   return (
-    <span ref={ref} className={cn("tabular-nums", className)}>
-      {prefix}
-      <span
-        className="inline-block text-left tabular-nums"
-        style={{ minWidth: `${final.length}ch` }}
-      >
-        {display}
+    <span
+      ref={ref}
+      aria-label={`${prefix ?? ""}${final}${suffix ?? ""}`}
+      aria-live="off"
+      className={cn("tabular-nums", className)}
+    >
+      <span aria-hidden="true">
+        {prefix}
+        <span
+          className="inline-block text-left tabular-nums"
+          style={{ minWidth: `${final.length}ch` }}
+        >
+          {display}
+        </span>
+        {suffix}
       </span>
-      {suffix}
     </span>
   );
 }

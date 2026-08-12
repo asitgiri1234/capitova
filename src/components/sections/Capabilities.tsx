@@ -77,7 +77,7 @@ export default function Capabilities() {
   const interactive = !reducedMotion && !coarsePointer;
 
   return (
-    <section id="capabilities" className="relative z-10 px-12 py-32">
+    <section id="capabilities" className="relative z-10 container-page py-32">
       <div className="mx-auto w-full max-w-7xl">
         <Scrim contentClassName="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -167,7 +167,7 @@ function BentoTile({
           {tile.title}
         </motion.h3>
 
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-white/50">
+        <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60">
           {tile.body}
         </p>
       </div>
@@ -185,7 +185,7 @@ function BentoTile({
         {tile.tags.map((tag) => (
           <span
             key={tag}
-            className="border border-white/12 px-2 py-1 font-mono text-[10px] tracking-widest text-white/45 uppercase"
+            className="border border-white/12 px-2 py-1 font-mono text-[10px] tracking-widest text-white/60 uppercase"
           >
             {tag}
           </span>

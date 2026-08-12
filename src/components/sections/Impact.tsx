@@ -150,7 +150,7 @@ export default function Impact() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-7xl px-12">
+      <div className="relative mx-auto w-full max-w-7xl container-page">
         <Scrim className="inline-block">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
           <span aria-hidden="true" className="block h-px w-12 bg-mint" />
@@ -206,7 +206,7 @@ export default function Impact() {
           ref={marqueeRef}
           className={
             reducedMotion
-              ? "flex w-full items-center gap-10 overflow-hidden px-12"
+              ? "flex w-full items-center gap-10 overflow-hidden container-page"
               : "flex w-max items-center gap-10"
           }
         >

@@ -36,7 +36,15 @@ export default function SmoothScroll({
     });
 
     // Keep the particle morph boundaries in sync with pin-driven layout.
-    const onRefresh = () => measureMorphBounds();
+    const onRefresh = () => {
+      measureMorphBounds();
+      // Leak canary: this count must be stable across refreshes and remounts.
+      if (process.env.NODE_ENV !== "production") {
+        console.info(
+          `[capitova] ScrollTrigger instances: ${ScrollTrigger.getAll().length}`,
+        );
+      }
+    };
     ScrollTrigger.addEventListener("refresh", onRefresh);
 
     // Reduced motion: no Lenis at all, native scrolling stays untouched.

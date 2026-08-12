@@ -120,6 +120,20 @@ that section's text above the particles. Sections therefore never paint their ow
 full-bleed background — dark sections stay transparent over `body`, and the light state
 comes from the panel underneath the canvas.
 
+### Shared layout classes
+
+Two classes in `@layer components` must be used rather than re-derived per section:
+
+- `.container-page` — the site's horizontal inset (24px / 40px / 64px). Never write
+  `px-*` on a section root; sections drifting apart is exactly what this prevents.
+- `.tap-target` — 44×44 minimum, applied only under `(pointer: coarse)` so the desktop
+  chrome keeps its 10–12px mono scale. Every interactive element outside the main CTAs
+  needs it.
+
+Pinned sections (`About`, `Technology`) create their ScrollTriggers inside
+`gsap.matchMedia("(min-width: 768px)")`. A pin must never be created below md — a 240vh
+pinned section on a phone is a scroll trap, not an effect.
+
 ### CSS layers
 
 Element-level rules in `globals.css` (`a`, `ul`, `:focus-visible`, `body`) must stay

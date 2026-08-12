@@ -39,6 +39,12 @@
   html {
     /* Lenis owns scrolling — never let the browser smooth it too. */
     scroll-behavior: auto;
+    /*
+      Reserve the scrollbar track. The preloader and mobile menu lock body
+      scroll; without this the scrollbar vanishes and the whole page shifts
+      horizontally — a CLS hit on every open and close.
+    */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -69,6 +75,41 @@
   :focus-visible {
     outline: 2px solid var(--color-mint);
     outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /*
+    One horizontal inset for the whole site. Defined once so sections cannot
+    drift apart: 24px mobile, 40px tablet, 64px desktop.
+  */
+  .container-page {
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-page {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-page {
+      padding-inline: 4rem;
+    }
+  }
+
+  /*
+    WCAG 2.5.5 target size. Only applied on coarse pointers so the desktop
+    chrome keeps its precise 10–12px mono scale.
+  */
+  @media (pointer: coarse) {
+    .tap-target {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 }
 

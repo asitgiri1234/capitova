@@ -18,7 +18,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative z-10 flex min-h-screen flex-col justify-center px-12 py-32 text-void"
+      className="relative z-10 flex min-h-screen flex-col justify-center container-page py-32 text-void"
     >
       <div className="mx-auto w-full max-w-5xl">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-void/50 uppercase">
@@ -50,12 +50,12 @@ export default function Contact() {
                 index < CHANNELS.length - 1 && "md:pr-8",
               )}
             >
-              <div className="font-mono text-[10px] tracking-[0.2em] text-void/45 uppercase">
+              <div className="font-mono text-[10px] tracking-[0.2em] text-void/65 uppercase">
                 {channel.label}
               </div>
               <a
                 href={`mailto:${channel.email}`}
-                className="mt-2 inline-block font-mono text-xs tracking-widest text-void underline decoration-void/30 decoration-1 underline-offset-4 transition-all duration-200 hover:decoration-void hover:underline-offset-[6px]"
+                className="tap-target mt-2 font-mono text-xs tracking-widest text-void underline decoration-void/30 decoration-1 underline-offset-4 transition-all duration-200 hover:decoration-void hover:underline-offset-[6px]"
               >
                 {channel.email}
               </a>

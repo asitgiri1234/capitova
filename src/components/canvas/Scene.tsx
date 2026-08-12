@@ -13,9 +13,16 @@ function pickParticleCount(): number {
   const width = window.innerWidth;
   const cores = navigator.hardwareConcurrency ?? 4;
 
-  if (width < 640) return 22000;
-  if (width < 1024) return 40000;
-  return cores >= 8 ? 90000 : 55000;
+  const count =
+    width < 640 ? 22000 : width < 1024 ? 40000 : cores >= 8 ? 90000 : 55000;
+
+  if (process.env.NODE_ENV !== "production") {
+    console.info(
+      `[capitova] particle tier: ${count.toLocaleString("en-US")} (viewport ${width}px, ${cores} cores)`,
+    );
+  }
+
+  return count;
 }
 
 function Rig({

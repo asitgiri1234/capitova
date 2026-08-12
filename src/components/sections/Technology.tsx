@@ -104,7 +104,7 @@ export default function Technology() {
     >
       <div
         ref={trackRef}
-        className="flex flex-col gap-8 px-12 py-24 md:h-full md:flex-row md:flex-nowrap md:items-stretch"
+        className="flex flex-col gap-8 container-page py-24 md:h-full md:flex-row md:flex-nowrap md:items-stretch"
       >
         <Scrim
           className="shrink-0 md:w-[clamp(360px,40vw,560px)] md:pr-16"

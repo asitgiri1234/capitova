@@ -66,7 +66,7 @@ function UtcClock() {
 export default function Footer() {
   return (
     <footer className="relative z-10 border-t border-void/15 text-void">
-      <div className="mx-auto w-full max-w-7xl px-12 pt-20">
+      <div className="mx-auto w-full max-w-7xl container-page pt-20">
         <div className="flex flex-wrap justify-between gap-12">
           <div className="text-2xl font-medium tracking-[-0.02em]">
             {SITE.name}
@@ -75,7 +75,7 @@ export default function Footer() {
           <div className="flex flex-wrap gap-16">
             {COLUMNS.map((column) => (
               <div key={column.title}>
-                <div className="font-mono text-xs tracking-widest text-void/45 uppercase">
+                <div className="font-mono text-xs tracking-widest text-void/65 uppercase">
                   {column.title}
                 </div>
                 <ul className="mt-5 space-y-3">
@@ -91,7 +91,7 @@ export default function Footer() {
                               }
                             : undefined
                         }
-                        className="font-mono text-xs tracking-widest text-void/50 uppercase transition-colors duration-200 hover:text-void"
+                        className="tap-target font-mono text-xs tracking-widest text-void/65 uppercase transition-colors duration-200 hover:text-void"
                       >
                         {link.label}
                       </a>
@@ -105,17 +105,17 @@ export default function Footer() {
       </div>
 
       {/* watermark wordmark, flush to the bottom edge */}
-      <div className="overflow-hidden px-12">
+      <div className="overflow-hidden container-page">
         <div
           aria-hidden="true"
-          className="mt-16 -mb-[0.14em] text-[clamp(4rem,18vw,16rem)] leading-none font-medium tracking-[-0.05em] text-void/8"
+          className="mt-16 -mb-[0.14em] whitespace-nowrap text-[clamp(4rem,18vw,16rem)] leading-none font-medium tracking-[-0.05em] text-void/8"
         >
           {SITE.name}
         </div>
       </div>
 
       <div className="border-t border-void/15">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 px-12 py-6 font-mono text-[10px] tracking-[0.2em] text-void/45 uppercase md:flex-row md:justify-between md:gap-0">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 container-page py-6 font-mono text-[10px] tracking-[0.2em] text-void/65 uppercase md:flex-row md:justify-between md:gap-0">
           <span>© 2026 Capitova Biosciences</span>
           <UtcClock />
           <span>52.5200° N, 13.4050° E</span>

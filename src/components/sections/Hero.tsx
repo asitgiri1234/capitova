@@ -65,7 +65,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col justify-end overflow-hidden px-12 pb-28"
+      className="relative flex min-h-screen flex-col justify-end overflow-hidden container-page pb-28"
     >
       {/* z-0 slot: WebGL canvas drops in here full-bleed without touching text layout */}
       <div
@@ -92,7 +92,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
           text={HEADLINE}
           as="h1"
           play={start}
-          className="mt-8 text-[clamp(3rem,10vw,11rem)] leading-[0.88] font-medium tracking-[-0.04em] text-bone"
+          className="mt-8 text-[clamp(2.5rem,10vw,11rem)] leading-[0.88] font-medium tracking-[-0.04em] text-bone"
         />
 
         <div ref={tailRef} style={{ opacity: reducedMotion ? 1 : 0 }}>
@@ -116,7 +116,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
             {STATS.map((stat, index) => (
               <li
                 key={stat}
-                className={`font-mono text-xs tracking-widest text-white/45 uppercase ${
+                className={`font-mono text-xs tracking-widest text-white/60 uppercase ${
                   index === 0 ? "pr-6" : "border-l border-white/10 px-6"
                 }`}
               >
@@ -128,7 +128,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
       </Scrim>
 
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3">
-        <span className="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase">
+        <span className="font-mono text-[10px] tracking-[0.3em] text-white/60 uppercase">
           Scroll
         </span>
         <span className="block h-10 w-px overflow-hidden bg-white/10">

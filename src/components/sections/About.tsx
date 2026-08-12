@@ -48,7 +48,11 @@ export default function About() {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
+    // Desktop only. Below md the pin is never created — a 240vh pinned
+    // section on a phone is a scroll trap, not an effect.
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
       const each = 0.06;
       const total = (words.length - 1) * each + 0.4;
 
@@ -61,6 +65,7 @@ export default function About() {
           end: "+=140%",
           pin: true,
           scrub: 1,
+          invalidateOnRefresh: true,
         },
       });
 
@@ -81,22 +86,44 @@ export default function About() {
         { opacity: 1, y: 0, duration: total * 0.25, ease: "none" },
         total * 0.75,
       );
-    }, section);
+    });
 
-    return () => ctx.revert();
+    // Mobile: natural height, one fade-in, words already at full contrast.
+    mm.add("(max-width: 767px)", () => {
+      gsap.set(plainWords, { color: "#EDEAE4" });
+      gsap.set(accentWords, { color: "#7BFFC4" });
+
+      gsap.fromTo(
+        factsRef.current,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: { trigger: factsRef.current, start: "top 90%", once: true },
+        },
+      );
+    });
+
+    return () => mm.revert();
   }, [reducedMotion]);
 
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="relative z-10 flex min-h-screen flex-col justify-center px-12 py-24"
+      className="relative z-10 flex min-h-screen flex-col justify-center container-page py-24"
     >
       <Scrim className="mx-auto w-full max-w-4xl">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
           <span aria-hidden="true" className="block h-px w-12 bg-mint" />
           01 / Innovation
         </p>
+
+        {/* The statement is the visual heading; this keeps the outline intact
+            without altering the design. */}
+        <h2 className="sr-only">Innovation</h2>
 
         <p className="mt-10 text-[clamp(1.75rem,4vw,3.5rem)] leading-[1.15] tracking-[-0.02em]">
           {WORDS.map((word, index) => {
@@ -135,7 +162,7 @@ export default function About() {
         >
           {FACTS.map((fact) => (
             <div key={fact.label} className="border-t border-white/10 pt-4">
-              <div className="font-mono text-xs tracking-widest text-white/40 uppercase">
+              <div className="font-mono text-xs tracking-widest text-white/55 uppercase">
                 {fact.label}
               </div>
               <div className="mt-2 font-mono text-xs tracking-widest text-bone uppercase tabular-nums">

@@ -64,6 +64,14 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <noscript>
+          <div className="container-page py-6 font-mono text-xs tracking-widest text-bone uppercase">
+            CAPITOVA runs its motion and 3D layers with JavaScript. The full
+            content of this page is available without it — only the animation
+            is missing.
+          </div>
+        </noscript>
+
         <Hud />
         <SmoothScroll>
           <main id="main">{children}</main>
