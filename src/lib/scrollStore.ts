@@ -9,12 +9,15 @@ export type ScrollState = {
   velocity: number;
   /** id of the section currently occupying the viewport. */
   activeSection: string;
+  /** true while the light (bone) panel owns the viewport. */
+  inverted: boolean;
 };
 
 const INITIAL: ScrollState = {
   progress: 0,
   velocity: 0,
   activeSection: "hero",
+  inverted: false,
 };
 
 let state: ScrollState = INITIAL;
@@ -39,12 +42,14 @@ export function setScrollState(partial: Partial<ScrollState>) {
         ? state.velocity
         : Math.round(partial.velocity * 100) / 100,
     activeSection: partial.activeSection ?? state.activeSection,
+    inverted: partial.inverted ?? state.inverted,
   };
 
   if (
     next.progress === state.progress &&
     next.velocity === state.velocity &&
-    next.activeSection === state.activeSection
+    next.activeSection === state.activeSection &&
+    next.inverted === state.inverted
   ) {
     return;
   }

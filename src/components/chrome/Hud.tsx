@@ -8,21 +8,48 @@ import { cn } from "@/lib/utils";
 
 const SECTION_IDS = ["hero", ...NAV.map((item) => item.id)] as const;
 
-const TICK = "pointer-events-none absolute h-[14px] w-[14px] border-white/20";
+const TICK = "pointer-events-none absolute h-[14px] w-[14px] transition-colors duration-[400ms]";
 
 export default function Hud() {
-  const { progress, activeSection } = useScrollStore();
+  const { progress, activeSection, inverted } = useScrollStore();
   useActiveSection(SECTION_IDS);
 
   const percent = String(Math.round(progress * 100)).padStart(3, "0");
 
+  // Every chrome element transitions over 400ms, so the flip never snaps.
+  const fade = "transition-colors duration-[400ms]";
+
   return (
     <div className="pointer-events-none fixed inset-0 z-40 select-none">
       {/* corner ticks */}
-      <span className={cn(TICK, "top-6 left-6 border-t border-l")} />
-      <span className={cn(TICK, "top-6 right-6 border-t border-r")} />
-      <span className={cn(TICK, "bottom-6 left-6 border-b border-l")} />
-      <span className={cn(TICK, "right-6 bottom-6 border-r border-b")} />
+      <span
+        className={cn(
+          TICK,
+          "top-6 left-6 border-t border-l",
+          inverted ? "border-void/30" : "border-white/20",
+        )}
+      />
+      <span
+        className={cn(
+          TICK,
+          "top-6 right-6 border-t border-r",
+          inverted ? "border-void/30" : "border-white/20",
+        )}
+      />
+      <span
+        className={cn(
+          TICK,
+          "bottom-6 left-6 border-b border-l",
+          inverted ? "border-void/30" : "border-white/20",
+        )}
+      />
+      <span
+        className={cn(
+          TICK,
+          "right-6 bottom-6 border-r border-b",
+          inverted ? "border-void/30" : "border-white/20",
+        )}
+      />
 
       {/* top-left: wordmark */}
       <div className="pointer-events-auto absolute top-6 left-12">
@@ -32,7 +59,11 @@ export default function Hud() {
             event.preventDefault();
             scrollToSection("hero");
           }}
-          className="font-mono text-xs tracking-[0.2em] text-bone uppercase"
+          className={cn(
+            "font-mono text-xs tracking-[0.2em] uppercase",
+            fade,
+            inverted ? "text-void" : "text-bone",
+          )}
         >
           {SITE.name}
         </a>
@@ -56,8 +87,15 @@ export default function Hud() {
                     scrollToSection(item.id);
                   }}
                   className={cn(
-                    "font-mono text-[10px] tracking-[0.2em] uppercase transition-colors duration-200",
-                    active ? "text-mint" : "text-white/50 hover:text-bone",
+                    "font-mono text-[10px] tracking-[0.2em] uppercase",
+                    fade,
+                    inverted
+                      ? active
+                        ? "text-violet-deep"
+                        : "text-void/50 hover:text-void"
+                      : active
+                        ? "text-mint"
+                        : "text-white/50 hover:text-bone",
                   )}
                 >
                   {item.label}
@@ -70,16 +108,38 @@ export default function Hud() {
 
       {/* bottom-left: live scroll readout */}
       <div className="absolute bottom-6 left-12 hidden font-mono text-[10px] tracking-[0.2em] uppercase md:block">
-        <span className="text-white/40">Scroll</span>
-        <span className="text-white/20"> / </span>
-        <span className="text-mint tabular-nums">{percent}%</span>
+        <span className={cn(fade, inverted ? "text-void/45" : "text-white/40")}>
+          Scroll
+        </span>
+        <span className={cn(fade, inverted ? "text-void/25" : "text-white/20")}>
+          {" / "}
+        </span>
+        <span
+          className={cn(
+            "tabular-nums",
+            fade,
+            inverted ? "text-violet-deep" : "text-mint",
+          )}
+        >
+          {percent}%
+        </span>
       </div>
 
       {/* bottom-right: progress rail */}
       <div className="absolute right-12 bottom-6 hidden md:block">
-        <div className="relative h-24 w-px bg-white/15">
+        <div
+          className={cn(
+            "relative h-24 w-px",
+            fade,
+            inverted ? "bg-void/20" : "bg-white/15",
+          )}
+        >
           <div
-            className="absolute inset-x-0 top-0 h-full origin-top bg-mint"
+            className={cn(
+              "absolute inset-x-0 top-0 h-full origin-top",
+              fade,
+              inverted ? "bg-violet-deep" : "bg-mint",
+            )}
             style={{ transform: `scaleY(${progress})` }}
           />
         </div>

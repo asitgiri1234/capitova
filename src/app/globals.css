@@ -11,6 +11,8 @@
   --color-surface: #0c1015;
   --color-mint: #7bffc4;
   --color-violet: #a78bfa;
+  /* inverted-state accent: violet dark enough to read on bone */
+  --color-violet-deep: #4c3d8f;
   --color-bone: #edeae4;
   --color-muted: #6b7280;
 
@@ -28,39 +30,46 @@
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
-html {
-  /* Lenis owns scrolling — never let the browser smooth it too. */
-  scroll-behavior: auto;
-}
-
-body {
-  background-color: var(--color-void);
-  color: var(--color-bone);
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-}
-
 /*
-  Tailwind's preflight already resets these; restated explicitly so a
-  stylesheet-loading failure degrades to plain text, not blue underlines.
+  Element-level styles live in @layer base so component utility classes
+  (underline, focus-visible:outline-*) can still override them. Unlayered
+  rules outrank Tailwind utilities and would silently win.
 */
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@layer base {
+  html {
+    /* Lenis owns scrolling — never let the browser smooth it too. */
+    scroll-behavior: auto;
+  }
 
-ul,
-ol {
-  list-style: none;
-}
+  body {
+    background-color: var(--color-void);
+    color: var(--color-bone);
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  }
 
-::selection {
-  background-color: var(--color-mint);
-  color: var(--color-void);
-}
+  /*
+    Tailwind's preflight already resets these; restated explicitly so a
+    stylesheet-loading failure degrades to plain text, not blue underlines.
+  */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-:focus-visible {
-  outline: 2px solid var(--color-mint);
-  outline-offset: 2px;
+  ul,
+  ol {
+    list-style: none;
+  }
+
+  ::selection {
+    background-color: var(--color-mint);
+    color: var(--color-void);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 2px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

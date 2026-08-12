@@ -103,6 +103,31 @@ bare `requestAnimationFrame`, so Lenis, ScrollTrigger and every tween share one 
 called after webfonts settle, and morph boundaries are re-measured on every refresh so
 pinned sections do not desync the particle field.
 
+### Stacking order
+
+| z      | Element                                                             |
+| ------ | ------------------------------------------------------------------- |
+| `0`    | `InversionPanel` — the bone panel that wipes in for the final CTA   |
+| `1`    | `CanvasLayer` — the persistent particle field                        |
+| `10`   | every section, plus the footer                                       |
+| `40`   | `Hud`                                                                |
+| `50`   | `Preloader`                                                          |
+
+The bone panel sits *below* the canvas on purpose. A light background painted by
+the Contact section itself would land at z-10 and hide the field completely, and no
+z-index arrangement can put particles above an opaque section background while keeping
+that section's text above the particles. Sections therefore never paint their own
+full-bleed background — dark sections stay transparent over `body`, and the light state
+comes from the panel underneath the canvas.
+
+### CSS layers
+
+Element-level rules in `globals.css` (`a`, `ul`, `:focus-visible`, `body`) must stay
+inside `@layer base`. Unlayered CSS outranks *every* Tailwind utility, so an unlayered
+`a { text-decoration: none }` silently defeats `underline`, and an unlayered
+`:focus-visible { outline: … mint }` defeats a per-component focus ring — which matters
+on the bone section, where a mint ring is invisible.
+
 ### WebGL rules
 
 - One `THREE.Points`, one geometry, one `ShaderMaterial`, one draw call. Adding a second

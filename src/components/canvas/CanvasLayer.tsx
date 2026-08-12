@@ -9,11 +9,13 @@ const Scene = dynamic(() => import("./Scene"), {
 });
 
 export default function CanvasLayer() {
+  // z-[1] sits above the bone inversion panel (z-0) and below sections (z-10),
+  // so the field stays visible once the page inverts.
   return (
     <div
       aria-hidden="true"
       role="presentation"
-      className="pointer-events-none fixed inset-0 z-0"
+      className="pointer-events-none fixed inset-0 z-[1]"
     >
       <Scene />
     </div>

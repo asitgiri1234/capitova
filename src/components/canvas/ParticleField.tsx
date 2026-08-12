@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TARGET_BUILDERS, mulberry32 } from "@/lib/particles/targets";
+import { getScrollState } from "@/lib/scrollStore";
 import {
   measureMorphBounds,
   morphProgressFromScroll,
@@ -14,6 +15,9 @@ import { particlesFragmentShader } from "./shaders/particles.frag";
 
 const MINT = new THREE.Color("#7bffc4");
 const VIOLET = new THREE.Color("#a78bfa");
+// Inverted palette: dark motes that stay dense against bone.
+const VOID = new THREE.Color("#06080b");
+const VIOLET_DEEP = new THREE.Color("#4c3d8f");
 
 type ParticleFieldProps = {
   count: number;
@@ -27,6 +31,9 @@ export default function ParticleField({
   activeRef,
 }: ParticleFieldProps) {
   const pointsRef = useRef<THREE.Points>(null);
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  const invertMix = useRef(0);
+  const blendIsNormal = useRef(false);
   const camera = useThree((state) => state.camera);
 
   const targets = useMemo(
@@ -131,6 +138,25 @@ export default function ParticleField({
       (target - uniforms.uProgress.value) * 0.06;
 
     uniforms.uMouse.value.lerp(pointerTarget.current, 0.06);
+
+    // Value inversion: the field goes dark and switches out of additive
+    // blending, which would otherwise wash out entirely against bone.
+    const invertTarget = getScrollState().inverted ? 1 : 0;
+    invertMix.current += (invertTarget - invertMix.current) * 0.06;
+    const mix = invertMix.current;
+
+    uniforms.uColorA.value.copy(MINT).lerp(VOID, mix);
+    uniforms.uColorB.value.copy(VIOLET).lerp(VIOLET_DEEP, mix);
+    uniforms.uOpacity.value = 0.62 + (0.95 - 0.62) * mix;
+
+    const wantNormal = mix > 0.5;
+    if (materialRef.current && wantNormal !== blendIsNormal.current) {
+      blendIsNormal.current = wantNormal;
+      materialRef.current.blending = wantNormal
+        ? THREE.NormalBlending
+        : THREE.AdditiveBlending;
+      materialRef.current.needsUpdate = true;
+    }
   });
 
   return (
@@ -165,6 +191,7 @@ export default function ParticleField({
         />
       </bufferGeometry>
       <shaderMaterial
+        ref={materialRef}
         vertexShader={particlesVertexShader}
         fragmentShader={particlesFragmentShader}
         uniforms={uniforms}
