@@ -80,27 +80,43 @@ export default function SplitText({
       aria-label={text.replace(/\n/g, " ")}
       className={cn(className)}
     >
-      {lines.map((line, lineIndex) => (
-        <span key={lineIndex} aria-hidden="true" className="block">
-          {line.split(" ").map((word, wordIndex) => (
-            <span
-              key={`${lineIndex}-${wordIndex}`}
-              className="inline-block overflow-hidden align-bottom"
-            >
+      {lines.map((line, lineIndex) => {
+        const words = line.split(" ");
+        return (
+          // display is set inline so the three-line structure survives even if
+          // utility CSS fails to load.
+          <span
+            key={lineIndex}
+            aria-hidden="true"
+            className="block"
+            style={{ display: "block" }}
+          >
+            {words.map((word, wordIndex) => (
               <span
-                data-split-inner
-                className="inline-block will-change-transform"
-                style={{ transform: "translateY(110%)" }}
+                key={`${lineIndex}-${wordIndex}`}
+                className="inline-block overflow-hidden align-bottom"
+                style={{
+                  display: "inline-block",
+                  overflow: "hidden",
+                  verticalAlign: "bottom",
+                  marginRight: wordIndex < words.length - 1 ? "0.25em" : undefined,
+                }}
               >
-                {word}
+                <span
+                  data-split-inner
+                  className="inline-block will-change-transform"
+                  style={{
+                    display: "inline-block",
+                    transform: reducedMotion ? "none" : "translateY(110%)",
+                  }}
+                >
+                  {word}
+                </span>
               </span>
-              {wordIndex < line.split(" ").length - 1 ? (
-                <span className="inline-block">&nbsp;</span>
-              ) : null}
-            </span>
-          ))}
-        </span>
-      ))}
+            ))}
+          </span>
+        );
+      })}
     </Tag>
   );
 }

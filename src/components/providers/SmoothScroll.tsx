@@ -19,6 +19,14 @@ export default function SmoothScroll({
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
+    // Dev-only: reduced motion silently disables every animation on the page,
+    // and Windows "Show animations off" turns it on. Make that visible.
+    if (process.env.NODE_ENV !== "production") {
+      console.info(
+        `[capitova] prefers-reduced-motion: ${reducedMotion ? "reduce (animations disabled)" : "no-preference"}`,
+      );
+    }
+
     // Layout shifts once webfonts swap in, and pinned triggers cache offsets.
     let fontsCancelled = false;
     document.fonts?.ready.then(() => {

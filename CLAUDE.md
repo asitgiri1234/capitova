@@ -19,6 +19,11 @@ Aesthetic: dark, technical, laboratory-instrument. Sharp edges, hairline rules, 
 
 Scripts: `npm run dev`, `npm run build`, `npm start`, `npm run lint`.
 
+> **Never run `npm run build` while `npm run dev` is running.** Both write to `.next`,
+> and the build overwrites the dev server's asset manifest — the page then loads with
+> `/_next/static/css/app/layout.css` returning 404 and renders completely unstyled
+> (serif text, white background, blue links). The fix is to restart the dev server.
+
 ## Design tokens
 
 All tokens live in `src/app/globals.css` inside a single `@theme` block, which emits them
