@@ -19,6 +19,24 @@ type SplitTextProps = {
 };
 
 /**
+ * Descender clearance for the clip box. Gloock's tails sit well below the
+ * baseline, so the wrapper is padded and pulled back by an equal negative
+ * margin — the visual baseline and line spacing are unchanged.
+ */
+const PAD_BOTTOM = 0.18;
+const PAD_TOP = 0.08;
+
+/**
+ * Start offset, in percent of the inner span's own height. It must clear the
+ * padded clip box, not just the text: at 110% the top of each glyph stayed
+ * inside the enlarged box and showed as stray fragments.
+ */
+const HIDDEN_Y = 130;
+
+/** Safety net — the headline must never be permanently invisible. */
+const FORCE_PLAY_MS = 2000;
+
+/**
  * Word-level split only — character splitting shreds the accessibility tree.
  * The full string lives on the wrapper's aria-label; the visual spans are
  * aria-hidden, so assistive tech reads one coherent sentence.
@@ -34,12 +52,16 @@ export default function SplitText({
   onComplete,
 }: SplitTextProps) {
   const ref = useRef<HTMLElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const startedRef = useRef(false);
   const reducedMotion = useReducedMotion();
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
   const lines = text.split("\n");
 
+  // Build the reveal once, paused. Playback is decided separately below, so a
+  // trigger that never arrives cannot leave the text stuck off-screen.
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -48,30 +70,63 @@ export default function SplitText({
 
     if (reducedMotion) {
       gsap.set(targets, { yPercent: 0, clearProps: "transform" });
+      startedRef.current = true;
       onCompleteRef.current?.();
       return;
     }
 
-    if (!play) return;
-
     gsap.registerPlugin(ScrollTrigger);
+    startedRef.current = false;
 
     const ctx = gsap.context(() => {
-      gsap.to(targets, {
-        yPercent: 0,
-        duration: 1.1,
-        ease: "expo.out",
-        delay,
-        stagger,
-        onComplete: () => onCompleteRef.current?.(),
-        ...(trigger === "scroll"
-          ? { scrollTrigger: { trigger: el, start: "top 85%", once: true } }
-          : {}),
-      });
+      // fromTo, not to: never rely on GSAP parsing the inline start transform.
+      tweenRef.current = gsap.fromTo(
+        targets,
+        { yPercent: HIDDEN_Y },
+        {
+          yPercent: 0,
+          duration: 1.1,
+          ease: "expo.out",
+          delay,
+          stagger,
+          // Scroll-triggered reveals are driven by ScrollTrigger; mount
+          // reveals stay paused until play() is called.
+          paused: trigger === "mount",
+          onComplete: () => onCompleteRef.current?.(),
+          ...(trigger === "scroll"
+            ? { scrollTrigger: { trigger: el, start: "top 85%", once: true } }
+            : {}),
+        },
+      );
     }, el);
 
-    return () => ctx.revert();
-  }, [delay, play, reducedMotion, stagger, trigger]);
+    return () => {
+      ctx.revert();
+      tweenRef.current = null;
+    };
+  }, [delay, reducedMotion, stagger, trigger]);
+
+  // Playback + safety net.
+  useLayoutEffect(() => {
+    if (reducedMotion || trigger !== "mount") return;
+
+    const start = () => {
+      if (startedRef.current) return;
+      const tween = tweenRef.current;
+      if (!tween) return;
+      startedRef.current = true;
+      tween.play();
+    };
+
+    if (play) {
+      start();
+      return;
+    }
+
+    // The gate never opened — reveal anyway rather than leave a blank hero.
+    const timer = window.setTimeout(start, FORCE_PLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [play, reducedMotion, trigger]);
 
   return (
     <Tag
@@ -99,11 +154,15 @@ export default function SplitText({
                   display: "inline-block",
                   overflow: "hidden",
                   verticalAlign: "bottom",
-                  // Gloock descenders sit below the baseline; without this the
-                  // clip box shears the tail off "Engineering".
-                  paddingBottom: "0.18em",
-                  marginBottom: "-0.18em",
-                  marginRight: wordIndex < words.length - 1 ? "0.25em" : undefined,
+                  // Match the heading's own line-height so the clip box tracks
+                  // the text box instead of collapsing to a default.
+                  lineHeight: "inherit",
+                  paddingTop: `${PAD_TOP}em`,
+                  marginTop: `${-PAD_TOP}em`,
+                  paddingBottom: `${PAD_BOTTOM}em`,
+                  marginBottom: `${-PAD_BOTTOM}em`,
+                  marginRight:
+                    wordIndex < words.length - 1 ? "0.25em" : undefined,
                 }}
               >
                 <span
@@ -111,7 +170,10 @@ export default function SplitText({
                   className="inline-block will-change-transform"
                   style={{
                     display: "inline-block",
-                    transform: reducedMotion ? "none" : "translateY(110%)",
+                    lineHeight: "inherit",
+                    transform: reducedMotion
+                      ? "none"
+                      : `translateY(${HIDDEN_Y}%)`,
                   }}
                 >
                   {word}
