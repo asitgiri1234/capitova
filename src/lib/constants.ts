@@ -18,3 +18,11 @@ export const NAV: readonly NavItem[] = [
   { id: "impact", label: "Impact" },
   { id: "contact", label: "Contact" },
 ] as const;
+
+export type Channel = { label: string; email: string };
+
+export const CONTACT_CHANNELS: readonly Channel[] = [
+  { label: "General", email: "hello@capitova.bio" },
+  { label: "Research", email: "research@capitova.bio" },
+  { label: "Press", email: "press@capitova.bio" },
+] as const;

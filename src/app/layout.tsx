@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Gloock, Inter, Instrument_Serif, Martian_Mono } from "next/font/google";
 import { SITE } from "@/lib/constants";
 import SmoothScroll from "@/components/providers/SmoothScroll";
@@ -38,6 +38,13 @@ const instrumentSerif = Instrument_Serif({
   style: ["italic"],
   display: "swap",
 });
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#06080B",
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {

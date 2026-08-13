@@ -10,6 +10,8 @@ import MobileMenu from "./MobileMenu";
 
 const SECTION_IDS = ["hero", ...NAV.map((item) => item.id)] as const;
 
+const MENU_ID = "mobile-menu";
+
 const TICK =
   "pointer-events-none absolute hidden h-[14px] w-[14px] transition-colors duration-[400ms] md:block";
 
@@ -84,6 +86,7 @@ export default function Hud() {
           onClick={() => setMenuOpen(true)}
           aria-expanded={menuOpen}
           aria-haspopup="dialog"
+          aria-controls={MENU_ID}
           className={cn(
             "tap-target font-mono text-xs tracking-[0.12em] uppercase md:hidden",
             fade,
@@ -163,10 +166,10 @@ export default function Hud() {
         </div>
       </div>
       <MobileMenu
+        id={MENU_ID}
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         activeSection={activeSection}
-        inverted={inverted}
       />
     </header>
   );

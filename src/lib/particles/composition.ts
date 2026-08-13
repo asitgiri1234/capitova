@@ -28,6 +28,16 @@ const COMPOSITION: Composition[] = [
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /**
+ * Below lg there is not enough horizontal room to push the field aside without
+ * cropping it, so it recentres and drops back far enough that text always wins.
+ */
+let compact = false;
+export function setCompactField(next: boolean) {
+  compact = next;
+}
+const COMPACT_OPACITY = 0.35;
+
+/**
  * Sample the table at a fractional uProgress so the framing crossfades along
  * the same axis as the morph itself — one continuous system, not six presets.
  */
@@ -37,10 +47,25 @@ export function sampleComposition(progress: number): Composition {
   const i = Math.floor(p);
   const t = p - i;
 
-  if (i >= last) return COMPOSITION[last];
+  if (i >= last) {
+    const end = COMPOSITION[last];
+    return compact
+      ? { x: 0, y: 0, scale: end.scale, opacity: COMPACT_OPACITY }
+      : end;
+  }
 
   const a = COMPOSITION[i];
   const b = COMPOSITION[i + 1];
+
+  if (compact) {
+    return {
+      x: 0,
+      y: 0,
+      scale: lerp(a.scale, b.scale, t),
+      opacity: COMPACT_OPACITY,
+    };
+  }
+
   return {
     x: lerp(a.x, b.x, t),
     y: lerp(a.y, b.y, t),

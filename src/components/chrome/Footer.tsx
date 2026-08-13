@@ -66,13 +66,13 @@ function UtcClock() {
 export default function Footer() {
   return (
     <footer className="relative z-10 border-t border-void/15 bg-bone text-void">
-      <div className="mx-auto w-full max-w-7xl container-page pt-20">
-        <div className="flex flex-wrap justify-between gap-12">
+      <div className="mx-auto w-full max-w-7xl container-page pt-16 md:pt-20">
+        <div className="flex flex-col gap-10 md:flex-row md:flex-wrap md:justify-between md:gap-12">
           <div className="font-display text-2xl tracking-[-0.01em]">
             {SITE.name}
           </div>
 
-          <div className="flex flex-wrap gap-16">
+          <div className="flex flex-col gap-8 sm:flex-row sm:flex-wrap sm:gap-16">
             {COLUMNS.map((column) => (
               <div key={column.title}>
                 <div className="font-mono text-xs tracking-widest text-void/65 uppercase">
@@ -108,14 +108,14 @@ export default function Footer() {
       <div className="overflow-hidden container-page">
         <div
           aria-hidden="true"
-          className="mt-16 -mb-[0.14em] whitespace-nowrap font-display text-[clamp(4rem,18vw,16rem)] leading-none tracking-[-0.02em] text-void/5"
+          className="mt-12 -mb-[0.12em] w-full max-w-full overflow-hidden whitespace-nowrap font-display text-[clamp(2.5rem,16vw,16rem)] leading-none tracking-[-0.02em] text-void/5 md:mt-16 md:-mb-[0.14em]"
         >
           {SITE.name}
         </div>
       </div>
 
       <div className="border-t border-void/15">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-3 container-page py-6 font-mono text-[10px] tracking-[0.12em] text-void/65 uppercase md:flex-row md:justify-between md:gap-0">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-2 container-page py-5 text-center font-mono text-[10px] tracking-[0.12em] text-void/65 uppercase md:flex-row md:justify-between md:gap-0 md:py-6 md:text-left">
           <span>© 2026 Capitova Biosciences</span>
           <UtcClock />
           <span>52.5200° N, 13.4050° E</span>

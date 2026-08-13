@@ -1,24 +1,24 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { NAV } from "@/lib/constants";
+import { CONTACT_CHANNELS, NAV } from "@/lib/constants";
 import { getLenis, scrollToSection } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 type MobileMenuProps = {
+  id: string;
   open: boolean;
   onClose: () => void;
   activeSection: string;
-  inverted: boolean;
 };
 
 const FOCUSABLE = "a[href], button:not([disabled])";
 
 export default function MobileMenu({
+  id,
   open,
   onClose,
   activeSection,
-  inverted,
 }: MobileMenuProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const restoreFocusRef = useRef<HTMLElement | null>(null);
@@ -77,13 +77,14 @@ export default function MobileMenu({
   return (
     <div
       ref={panelRef}
+      id={id}
       role="dialog"
       aria-modal="true"
       aria-label="Site navigation"
-      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-void md:hidden"
+      className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-void/98 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] md:hidden"
     >
-      <div className="flex items-center justify-between px-6 pt-6">
-        <span className="font-mono text-xs tracking-[0.12em] text-bone uppercase">
+      <div className="flex items-center justify-between container-page pt-6">
+        <span className="font-display text-base tracking-[0.02em] text-bone">
           Menu
         </span>
         <button
@@ -95,8 +96,11 @@ export default function MobileMenu({
         </button>
       </div>
 
-      <nav aria-label="Sections" className="flex flex-1 flex-col justify-center px-6">
-        <ul className="flex flex-col gap-2">
+      <nav
+        aria-label="Sections"
+        className="flex flex-1 flex-col justify-center container-page"
+      >
+        <ul className="flex flex-col gap-1">
           {NAV.map((item) => (
             <li key={item.id}>
               <a
@@ -108,12 +112,8 @@ export default function MobileMenu({
                   scrollToSection(item.id);
                 }}
                 className={cn(
-                  "tap-target py-3 font-mono text-2xl tracking-[0.06em] uppercase",
-                  activeSection === item.id
-                    ? inverted
-                      ? "text-violet-deep"
-                      : "text-mint"
-                    : "text-bone",
+                  "tap-target block py-3 font-display text-3xl tracking-[-0.01em]",
+                  activeSection === item.id ? "text-mint" : "text-bone",
                 )}
               >
                 {item.label}
@@ -122,6 +122,21 @@ export default function MobileMenu({
           ))}
         </ul>
       </nav>
+
+      <div className="container-page pb-8">
+        <ul className="flex flex-col gap-1 border-t border-white/10 pt-6">
+          {CONTACT_CHANNELS.map((channel) => (
+            <li key={channel.label}>
+              <a
+                href={`mailto:${channel.email}`}
+                className="tap-target font-mono text-[10px] tracking-[0.12em] text-white/60 uppercase"
+              >
+                {channel.label} / {channel.email}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

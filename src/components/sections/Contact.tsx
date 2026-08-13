@@ -5,15 +5,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useAnimate } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useHoverCapable } from "@/hooks/useHoverCapable";
 import SplitText from "@/components/ui/SplitText";
+import { CONTACT_CHANNELS } from "@/lib/constants";
 import { setScrollState } from "@/lib/scrollStore";
 import { cn } from "@/lib/utils";
-
-const CHANNELS = [
-  { label: "General", email: "hello@capitova.bio" },
-  { label: "Research", email: "research@capitova.bio" },
-  { label: "Press", email: "press@capitova.bio" },
-] as const;
 
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,8 +36,13 @@ export default function Contact() {
             scrollTrigger: {
               trigger: section,
               start: "top 85%",
-              end: "top 20%",
+              // Shorter travel on phones: a 65% window does not complete
+              // before the section is already filling the screen.
+              end: window.matchMedia("(min-width: 768px)").matches
+                ? "top 20%"
+                : "top 50%",
               scrub: 0.8,
+              invalidateOnRefresh: true,
             },
           },
         );
@@ -66,7 +67,7 @@ export default function Contact() {
     <section
       ref={sectionRef}
       id="contact"
-      className="relative z-10 container-page flex min-h-screen flex-col justify-center py-32 text-void"
+      className="relative z-10 container-page flex min-h-[100dvh] flex-col justify-center section-y text-void"
     >
       {/*
         Bone lives inside the section, clipped to its own box. A fixed,
@@ -90,24 +91,24 @@ export default function Contact() {
           text={"Let's build the next molecule."}
           as="h2"
           trigger="scroll"
-          className="mt-10 font-display text-[clamp(2.5rem,8vw,6.5rem)] leading-[0.95] tracking-[-0.015em] text-void"
+          className="mt-8 font-display text-[clamp(1.85rem,7.5vw,6.5rem)] leading-[1.02] tracking-[-0.01em] text-void md:mt-10 md:leading-[0.95] md:tracking-[-0.015em]"
         />
 
-        <p className="mt-10 max-w-lg text-base leading-relaxed text-void/55">
+        <p className="mt-8 max-w-lg text-[15px] leading-relaxed text-void/65 md:mt-10 md:text-base">
           We work with research groups and clinical teams who need a design
           cycle measured in days — tell us what you are trying to build.
         </p>
 
         <PrimaryCta reducedMotion={reducedMotion} />
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3">
-          {CHANNELS.map((channel, index) => (
+        <div className="mt-12 grid grid-cols-1 md:mt-16 md:grid-cols-3">
+          {CONTACT_CHANNELS.map((channel, index) => (
             <div
               key={channel.label}
               className={cn(
                 "border-t border-void/15 py-6 md:border-t-0 md:py-0",
                 index > 0 && "md:border-l md:border-void/15 md:pl-8",
-                index < CHANNELS.length - 1 && "md:pr-8",
+                index < CONTACT_CHANNELS.length - 1 && "md:pr-8",
               )}
             >
               <div className="font-mono text-[10px] tracking-[0.12em] text-void/65 uppercase">
@@ -128,6 +129,7 @@ export default function Contact() {
 }
 
 function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
+  const hoverable = useHoverCapable();
   const [scope, animate] = useAnimate();
   const fillRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -136,7 +138,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
   const EXPO = [0.16, 1, 0.3, 1] as const;
 
   const enter = () => {
-    if (reducedMotion) return;
+    if (reducedMotion || !hoverable) return;
     const fill = fillRef.current;
     if (!fill) return;
     // sweeps up from the bottom …
@@ -152,7 +154,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
   };
 
   const leave = () => {
-    if (reducedMotion) return;
+    if (reducedMotion || !hoverable) return;
     const fill = fillRef.current;
     if (!fill) return;
     // … and retracts upward, so it never simply plays in reverse.
@@ -168,7 +170,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
   };
 
   return (
-    <div ref={scope} className="mt-16">
+    <div ref={scope} className="mt-12 md:mt-16">
       <a
         href="mailto:research@capitova.bio"
         onPointerEnter={enter}
@@ -176,7 +178,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
         onFocus={enter}
         onBlur={leave}
         className={cn(
-          "relative flex w-full items-center justify-between overflow-hidden border border-void px-8 py-8",
+          "relative flex w-full items-center justify-between overflow-hidden border border-void px-6 py-6 md:px-8 md:py-8",
           // The global focus ring is mint, which is invisible on bone.
           "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-void",
           // Reduced motion gets a plain instant swap instead of the sweep.
@@ -194,7 +196,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
 
         <span
           ref={labelRef}
-          className="relative z-10 font-mono text-sm tracking-[0.15em] uppercase"
+          className="relative z-10 font-mono text-xs tracking-[0.12em] uppercase md:text-sm md:tracking-[0.15em]"
         >
           Start a conversation
         </span>

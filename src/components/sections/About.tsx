@@ -88,10 +88,26 @@ export default function About() {
       );
     });
 
-    // Mobile: natural height, one fade-in, words already at full contrast.
+    // Mobile: natural height, no pin, no scrub. Words are already at full
+    // contrast and the statement arrives with a single fade-up.
     mm.add("(max-width: 767px)", () => {
       gsap.set(plainWords, { color: "#EDEAE4" });
       gsap.set(accentWords, { color: "#7BFFC4" });
+
+      const statement = section.querySelector("[data-statement]");
+      if (statement) {
+        gsap.fromTo(
+          statement,
+          { opacity: 0, y: 24 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: { trigger: statement, start: "top 88%", once: true },
+          },
+        );
+      }
 
       gsap.fromTo(
         factsRef.current,
@@ -113,7 +129,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative z-10 flex min-h-screen flex-col justify-center container-page py-24"
+      className="relative z-10 flex flex-col justify-center container-page section-y md:min-h-[100dvh]"
     >
       <Scrim className="mx-auto w-full max-w-4xl">
         <p className="flex items-center gap-4 font-mono text-xs tracking-widest text-white/50 uppercase">
@@ -125,7 +141,9 @@ export default function About() {
             without altering the design. */}
         <h2 className="sr-only">Innovation</h2>
 
-        <p className="mt-10 text-[clamp(1.75rem,4vw,3.5rem)] leading-[1.15] tracking-[-0.02em]">
+        <p
+          data-statement
+          className="mt-8 max-w-full text-[clamp(1.25rem,4.4vw,3.5rem)] leading-[1.35] tracking-[-0.01em] md:mt-10 md:leading-[1.15] md:tracking-[-0.02em]">
           {WORDS.map((word, index) => {
             const accent =
               ACCENT_START >= 0 && index >= ACCENT_START && index <= ACCENT_END;
@@ -157,11 +175,11 @@ export default function About() {
 
         <div
           ref={factsRef}
-          className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12"
+          className="mt-12 grid grid-cols-1 gap-0 md:mt-16 md:grid-cols-3 md:gap-12"
           style={{ opacity: reducedMotion ? 1 : 0 }}
         >
           {FACTS.map((fact) => (
-            <div key={fact.label} className="border-t border-white/10 pt-4">
+            <div key={fact.label} className="border-t border-white/10 py-4 md:py-0 md:pt-4">
               <div className="font-mono text-xs tracking-widest text-white/55 uppercase">
                 {fact.label}
               </div>

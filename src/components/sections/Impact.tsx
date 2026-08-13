@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useHoverCapable } from "@/hooks/useHoverCapable";
 import Odometer from "@/components/ui/Odometer";
 
 type Stat = {
@@ -56,6 +57,7 @@ export default function Impact() {
   const sectionRef = useRef<HTMLElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const hoverable = useHoverCapable();
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -108,12 +110,16 @@ export default function Impact() {
     if (!track || reducedMotion) return;
 
     const ctx = gsap.context(() => {
+      const slow = !window.matchMedia("(min-width: 768px)").matches;
       const tween = gsap.to(track, {
         xPercent: -50,
-        duration: 38,
+        // 60% speed on mobile — the same distance takes proportionally longer.
+        duration: slow ? 38 / 0.6 : 38,
         ease: "none",
         repeat: -1,
       });
+
+      if (!hoverable) return;
 
       const pause = () => tween.pause();
       const resume = () => tween.resume();
@@ -127,13 +133,13 @@ export default function Impact() {
     }, track);
 
     return () => ctx.revert();
-  }, [reducedMotion]);
+  }, [hoverable, reducedMotion]);
 
   return (
     <section
       ref={sectionRef}
       id="impact"
-      className="relative z-10 flex min-h-screen flex-col justify-center py-40"
+      className="relative z-10 flex flex-col justify-center section-y md:min-h-[100dvh]"
     >
       {/* legibility scrims so stats stay readable over the particle field */}
       <div
@@ -161,7 +167,7 @@ export default function Impact() {
           Measured, not claimed.
         </h2>
 
-        <div className="mt-20 grid grid-cols-1 items-start gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 items-start gap-x-8 gap-y-10 sm:grid-cols-2 md:mt-20 md:gap-x-10 md:gap-y-14 lg:grid-cols-4">
           {STATS.map((stat) => (
             <div
               key={stat.label}
@@ -169,7 +175,7 @@ export default function Impact() {
               style={{ opacity: reducedMotion ? 1 : 0 }}
               className="min-w-0 border-t border-white/10 pt-6"
             >
-              <div className="flex h-[clamp(2.75rem,5.5vw,5.5rem)] items-baseline whitespace-nowrap text-[clamp(2.75rem,5.5vw,5.5rem)] leading-none font-medium tracking-[-0.05em] text-bone">
+              <div className="flex h-[clamp(2.25rem,9vw,5.5rem)] items-baseline whitespace-nowrap text-[clamp(2.25rem,9vw,5.5rem)] leading-none font-medium tracking-[-0.04em] text-bone md:tracking-[-0.05em]">
                 <Odometer
                   value={stat.value}
                   decimals={stat.decimals ?? 0}
@@ -187,7 +193,7 @@ export default function Impact() {
               <div className="mt-6 font-mono text-xs tracking-[0.12em] text-mint uppercase">
                 {stat.label}
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-balance text-white/70">
+              <p className="mt-3 text-[15px] leading-relaxed text-balance text-white/70 md:text-sm">
                 {stat.description}
               </p>
             </div>
@@ -199,7 +205,7 @@ export default function Impact() {
         The edge fade is masked on the track, not the strip, so the strip
         itself stays solid edge to edge.
       */}
-      <div className="group relative z-10 mt-24 overflow-hidden border-y border-white/10 bg-void py-6">
+      <div className="group relative z-10 mt-16 overflow-hidden border-y border-white/10 bg-void py-5 md:mt-24 md:py-6">
         <div
           className="overflow-hidden"
           style={{

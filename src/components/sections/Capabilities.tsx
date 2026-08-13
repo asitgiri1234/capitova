@@ -77,7 +77,7 @@ export default function Capabilities() {
   const interactive = !reducedMotion && !coarsePointer;
 
   return (
-    <section id="capabilities" className="relative z-10 container-page py-32">
+    <section id="capabilities" className="relative z-10 container-page section-y">
       <div className="mx-auto w-full max-w-7xl">
         <Scrim contentClassName="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -89,7 +89,7 @@ export default function Capabilities() {
               What we run in-house.
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-white/55 lg:text-right">
+          <p className="max-w-sm text-[15px] leading-relaxed text-white/60 md:text-sm lg:text-right">
             Every step from sequence to validated candidate happens under one
             roof, so a design decision and its wet-lab answer are days apart
             rather than quarters.
@@ -97,7 +97,7 @@ export default function Capabilities() {
         </Scrim>
 
         {/* gap-px over a white/8 ground: the gaps themselves are the hairlines */}
-        <div className="mt-16 grid grid-cols-1 gap-px bg-white/8 md:grid-cols-6 lg:grid-cols-12">
+        <div className="mt-12 grid grid-cols-1 gap-px bg-white/8 md:mt-16 md:grid-cols-6 lg:grid-cols-12">
           {TILES.map((tile) => (
             <BentoTile
               key={tile.index}
@@ -142,8 +142,8 @@ function BentoTile({
       }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
-        "relative flex min-h-[280px] flex-col justify-between border border-transparent bg-void p-8",
-        tile.hero && "min-h-[420px] lg:min-h-[560px]",
+        "relative flex min-h-[220px] flex-col justify-between border border-transparent bg-void p-6 md:min-h-[280px] md:p-8",
+        tile.hero && "min-h-[360px] md:min-h-[420px] lg:min-h-[560px]",
         tile.span,
       )}
     >
@@ -167,7 +167,7 @@ function BentoTile({
           {tile.title}
         </motion.h3>
 
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60">
+        <p className="mt-4 max-w-md text-[15px] leading-relaxed text-white/60 md:text-sm">
           {tile.body}
         </p>
       </div>
@@ -175,17 +175,17 @@ function BentoTile({
       {tile.hero ? (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-8 top-1/2 bottom-24 z-0 -translate-y-1/4"
+          className="pointer-events-none absolute inset-x-6 top-1/2 bottom-28 z-0 h-[180px] -translate-y-1/4 md:inset-x-8 md:bottom-24 md:h-auto"
         >
           <CellDivisionCanvas />
         </div>
       ) : null}
 
-      <div className="relative z-10 mt-8 flex flex-wrap gap-2">
+      <div className="relative z-10 mt-6 flex max-w-full flex-wrap gap-2 md:mt-8">
         {tile.tags.map((tag) => (
           <span
             key={tag}
-            className="border border-white/12 px-2 py-1 font-mono text-[10px] tracking-widest text-white/60 uppercase"
+            className="max-w-full border border-white/12 px-2 py-1 font-mono text-[10px] break-words tracking-widest text-white/60 uppercase"
           >
             {tag}
           </span>

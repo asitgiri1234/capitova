@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion } from "motion/react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useHoverCapable } from "@/hooks/useHoverCapable";
 import Counter from "@/components/ui/Counter";
 import Reveal from "@/components/ui/Reveal";
 import Scrim from "@/components/ui/Scrim";
@@ -54,6 +55,7 @@ export default function Technology() {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const hoverable = useHoverCapable();
 
   useLayoutEffect(() => {
     const section = sectionRef.current;
@@ -100,11 +102,11 @@ export default function Technology() {
     <section
       ref={sectionRef}
       id="technology"
-      className="relative z-10 md:h-screen md:overflow-hidden"
+      className="relative z-10 md:h-[100dvh] md:overflow-hidden"
     >
       <div
         ref={trackRef}
-        className="flex flex-col gap-8 container-page py-24 md:h-full md:flex-row md:flex-nowrap md:items-stretch"
+        className="flex flex-col gap-4 container-page section-y md:h-full md:flex-row md:flex-nowrap md:items-stretch md:gap-8"
       >
         <Scrim
           className="shrink-0 md:w-[clamp(360px,40vw,560px)] md:pr-16"
@@ -125,7 +127,7 @@ export default function Technology() {
             delay={index * 0.05}
             className="shrink-0 md:h-full"
           >
-            <TechCard card={card} reducedMotion={reducedMotion} />
+            <TechCard card={card} reducedMotion={reducedMotion} hoverable={hoverable} />
           </Reveal>
         ))}
       </div>
@@ -136,11 +138,14 @@ export default function Technology() {
 function TechCard({
   card,
   reducedMotion,
+  hoverable,
 }: {
   card: Card;
   reducedMotion: boolean;
+  hoverable: boolean;
 }) {
-  const hover = reducedMotion ? undefined : "hover";
+  // Touch reports a synthetic hover on tap; without this the lift sticks.
+  const hover = reducedMotion || !hoverable ? undefined : "hover";
 
   return (
     <motion.article
@@ -154,7 +159,7 @@ function TechCard({
         hover: { y: -6, borderColor: "rgba(123,255,196,0.4)" },
       }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="flex h-full w-full flex-col border border-white/10 bg-surface/75 p-8 backdrop-blur-[3px] md:w-[clamp(320px,32vw,440px)]"
+      className="flex h-full w-full flex-col border border-white/10 bg-surface/75 p-6 backdrop-blur-[3px] md:w-[clamp(320px,32vw,440px)] md:p-8"
     >
       <motion.span
         variants={{
@@ -169,14 +174,14 @@ function TechCard({
 
       <span aria-hidden="true" className="mt-6 block h-px w-full bg-white/10" />
 
-      <h3 className="mt-6 text-3xl font-medium tracking-tight text-bone">
+      <h3 className="mt-5 text-2xl font-medium tracking-tight text-bone md:mt-6 md:text-3xl">
         {card.title}
       </h3>
 
-      <p className="mt-4 text-sm leading-relaxed text-white/55">{card.body}</p>
+      <p className="mt-4 text-[15px] leading-relaxed text-white/55 md:text-sm">{card.body}</p>
 
-      <div className="mt-auto pt-10">
-        <div className="font-mono text-5xl text-bone tabular-nums">
+      <div className="mt-auto pt-8 md:pt-10">
+        <div className="font-mono text-4xl text-bone tabular-nums md:text-5xl">
           <Counter value={card.value} decimals={card.decimals ?? 0} />
         </div>
         <div className="mt-3 font-mono text-xs tracking-widest text-mint uppercase">

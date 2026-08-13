@@ -98,6 +98,9 @@ export default function ParticleField({
 
   useEffect(() => {
     if (reducedMotion) return;
+    // No cursor to track on touch, and the synthetic pointer events a tap
+    // emits would leave the lens stuck wherever the finger last landed.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     const onPointerMove = (event: PointerEvent) => {
       const ndc = new THREE.Vector2(

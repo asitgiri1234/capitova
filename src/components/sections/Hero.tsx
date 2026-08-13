@@ -65,7 +65,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
   return (
     <section
       id="hero"
-      className="relative flex min-h-screen flex-col justify-end overflow-hidden container-page pb-28"
+      className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden container-page pb-24 md:pb-28"
     >
       {/* z-0 slot: WebGL canvas drops in here full-bleed without touching text layout */}
       <div
@@ -92,18 +92,18 @@ export default function Hero({ start = true }: { start?: boolean }) {
           text={HEADLINE}
           as="h1"
           play={start}
-          className="mt-8 font-display text-[clamp(2.5rem,10vw,9rem)] leading-[0.95] tracking-[-0.015em] text-bone"
+          className="mt-6 font-display text-[clamp(1.95rem,8.5vw,9rem)] leading-[1.02] tracking-[-0.01em] text-bone md:mt-8 md:leading-[0.95] md:tracking-[-0.015em]"
         />
 
         <div ref={tailRef} style={{ opacity: reducedMotion ? 1 : 0 }}>
-          <p className="mt-10 max-w-md text-base leading-relaxed text-white/60">
+          <p className="mt-8 max-w-md text-[15px] leading-relaxed text-white/60 md:mt-10 md:text-base">
             We pair computational protein design with automated wet-lab
             validation to move therapeutic candidates from sequence to
             structure in days, not years.
           </p>
 
           {/* gap-6 = 24px: two buttons capped at 12px each can never close it */}
-          <div className="mt-10 flex flex-wrap items-center gap-6">
+          <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-6 md:mt-10">
             <MagneticButton href="#about" variant="primary">
               Explore the platform
             </MagneticButton>
@@ -127,7 +127,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
         </div>
       </Scrim>
 
-      <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3">
+      <div className="pointer-events-none absolute bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-3 sm:flex md:bottom-8">
         <span className="font-mono text-[10px] tracking-[0.18em] text-white/60 uppercase">
           Scroll
         </span>
