@@ -85,7 +85,7 @@ export default function Capabilities() {
               <span aria-hidden="true" className="block h-px w-12 bg-mint" />
               03 / Capabilities
             </p>
-            <h2 className="mt-8 text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.03em] text-bone">
+            <h2 className="mt-8 font-display text-[clamp(2.25rem,5vw,3.8rem)] leading-[1.0] tracking-[-0.01em] text-bone">
               What we run in-house.
             </h2>
           </div>

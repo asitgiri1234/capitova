@@ -83,7 +83,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
       </div>
 
       <Scrim className="z-10 mx-auto w-full max-w-7xl">
-        <p className="flex items-center gap-3 font-mono text-xs tracking-[0.25em] text-mint uppercase">
+        <p className="flex items-center gap-3 font-mono text-xs tracking-[0.15em] text-mint uppercase">
           <span aria-hidden="true" className="inline-block h-px w-px bg-mint" />
           Precision Biology / Est. 2019
         </p>
@@ -92,7 +92,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
           text={HEADLINE}
           as="h1"
           play={start}
-          className="mt-8 text-[clamp(2.5rem,10vw,11rem)] leading-[0.88] font-medium tracking-[-0.04em] text-bone"
+          className="mt-8 font-display text-[clamp(2.5rem,10vw,9rem)] leading-[0.95] tracking-[-0.015em] text-bone"
         />
 
         <div ref={tailRef} style={{ opacity: reducedMotion ? 1 : 0 }}>
@@ -128,7 +128,7 @@ export default function Hero({ start = true }: { start?: boolean }) {
       </Scrim>
 
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3">
-        <span className="font-mono text-[10px] tracking-[0.3em] text-white/60 uppercase">
+        <span className="font-mono text-[10px] tracking-[0.18em] text-white/60 uppercase">
           Scroll
         </span>
         <span className="block h-10 w-px overflow-hidden bg-white/10">

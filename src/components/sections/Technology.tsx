@@ -114,7 +114,7 @@ export default function Technology() {
             <span aria-hidden="true" className="block h-px w-12 bg-mint" />
             02 / Research
           </p>
-          <h2 className="mt-8 text-[clamp(2.5rem,6vw,5rem)] leading-[0.95] font-medium tracking-[-0.03em] text-bone">
+          <h2 className="mt-8 font-display text-[clamp(2.25rem,6vw,4.25rem)] leading-[1.0] tracking-[-0.01em] text-bone">
             Four systems, one pipeline.
           </h2>
         </Scrim>

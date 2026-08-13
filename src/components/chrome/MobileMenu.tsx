@@ -83,13 +83,13 @@ export default function MobileMenu({
       className="pointer-events-auto fixed inset-0 z-50 flex flex-col bg-void md:hidden"
     >
       <div className="flex items-center justify-between px-6 pt-6">
-        <span className="font-mono text-xs tracking-[0.2em] text-bone uppercase">
+        <span className="font-mono text-xs tracking-[0.12em] text-bone uppercase">
           Menu
         </span>
         <button
           type="button"
           onClick={onClose}
-          className="tap-target justify-end font-mono text-xs tracking-[0.2em] text-bone uppercase"
+          className="tap-target justify-end font-mono text-xs tracking-[0.12em] text-bone uppercase"
         >
           Close
         </button>
@@ -108,7 +108,7 @@ export default function MobileMenu({
                   scrollToSection(item.id);
                 }}
                 className={cn(
-                  "tap-target py-3 font-mono text-2xl tracking-[0.1em] uppercase",
+                  "tap-target py-3 font-mono text-2xl tracking-[0.06em] uppercase",
                   activeSection === item.id
                     ? inverted
                       ? "text-violet-deep"

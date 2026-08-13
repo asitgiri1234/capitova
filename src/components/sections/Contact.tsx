@@ -90,7 +90,7 @@ export default function Contact() {
           text={"Let's build the next molecule."}
           as="h2"
           trigger="scroll"
-          className="mt-10 text-[clamp(3rem,8vw,8rem)] leading-[0.88] font-medium tracking-[-0.045em] text-void"
+          className="mt-10 font-display text-[clamp(2.5rem,8vw,6.5rem)] leading-[0.95] tracking-[-0.015em] text-void"
         />
 
         <p className="mt-10 max-w-lg text-base leading-relaxed text-void/55">
@@ -110,7 +110,7 @@ export default function Contact() {
                 index < CHANNELS.length - 1 && "md:pr-8",
               )}
             >
-              <div className="font-mono text-[10px] tracking-[0.2em] text-void/65 uppercase">
+              <div className="font-mono text-[10px] tracking-[0.12em] text-void/65 uppercase">
                 {channel.label}
               </div>
               <a
@@ -194,7 +194,7 @@ function PrimaryCta({ reducedMotion }: { reducedMotion: boolean }) {
 
         <span
           ref={labelRef}
-          className="relative z-10 font-mono text-sm tracking-[0.25em] uppercase"
+          className="relative z-10 font-mono text-sm tracking-[0.15em] uppercase"
         >
           Start a conversation
         </span>

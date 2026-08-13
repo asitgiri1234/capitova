@@ -20,10 +20,15 @@
   --radius-sm: 2px;
   --radius-md: 4px;
 
-  /* typefaces (values injected by next/font in layout.tsx) */
-  --font-display: var(--font-instrument-sans);
+  /*
+    Three tiers (values injected by next/font in layout.tsx):
+    display = headings only, body = all prose, mono = every label and chrome.
+    Gloock is weight 400 only — never pair --font-display with a bold utility.
+  */
+  --font-display: var(--font-gloock);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-martian-mono);
   --font-serif: var(--font-instrument-serif);
-  --font-mono: var(--font-geist-mono);
 
   /* easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -50,7 +55,7 @@
   body {
     background-color: var(--color-void);
     color: var(--color-bone);
-    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   }
 
   /*
@@ -65,6 +70,15 @@
   ul,
   ol {
     list-style: none;
+  }
+
+  /*
+    Gloock ships weight 400 only. Preflight already resets headings to
+    inherit, but this makes a stray font-bold render at 400 instead of
+    smearing into a synthesised fake bold.
+  */
+  .font-display {
+    font-synthesis-weight: none;
   }
 
   ::selection {

@@ -99,7 +99,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             style={{ transform: `scaleX(${progress / 100})` }}
           />
         </div>
-        <div className="mt-6 text-center font-mono text-[10px] tracking-[0.3em] text-white/60 uppercase">
+        <div className="mt-6 text-center font-mono text-[10px] tracking-[0.18em] text-white/60 uppercase">
           {phaseFor(progress)}
         </div>
       </div>

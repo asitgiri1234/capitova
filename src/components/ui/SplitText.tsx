@@ -99,6 +99,10 @@ export default function SplitText({
                   display: "inline-block",
                   overflow: "hidden",
                   verticalAlign: "bottom",
+                  // Gloock descenders sit below the baseline; without this the
+                  // clip box shears the tail off "Engineering".
+                  paddingBottom: "0.18em",
+                  marginBottom: "-0.18em",
                   marginRight: wordIndex < words.length - 1 ? "0.25em" : undefined,
                 }}
               >

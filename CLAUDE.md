@@ -58,11 +58,27 @@ Radii exist for hairline-precise edges only. They are not a license to round any
 
 ### Type
 
-- `--font-display` → Instrument Sans (400/500/600/700), set on `body`.
-- `--font-mono` → Geist Mono (400/500), available as `font-mono`.
+Three tiers, all loaded with `next/font/google` in `src/app/layout.tsx`, exposed as CSS
+variables on `<html>`, and mapped onto Tailwind's font namespace by `@theme`.
 
-Both are loaded with `next/font/google` in `src/app/layout.tsx` and exposed as CSS variables
-on `<html>`; `@theme` maps them onto Tailwind's font namespace.
+| Token             | Family                    | Weights | Used for                                              |
+| ----------------- | ------------------------- | ------- | ----------------------------------------------------- |
+| `--font-display`  | Gloock                    | **400 only** | `h1`, `h2`, hero and Contact headlines, wordmarks |
+| `--font-body`     | Inter                     | 400/500 | all prose, card titles and body, the About statement   |
+| `--font-mono`     | Martian Mono              | 400/500 | labels, eyebrows, indices, nav, HUD, marquee, footer   |
+| `--font-serif`    | Instrument Serif *italic* | 400     | the About accent words only                            |
+
+`--font-body` is set on `body`; headings opt into `font-display` explicitly.
+
+> **Gloock has exactly one weight.** Never put `font-medium`, `font-semibold` or
+> `font-bold` on an element using `--font-display` — the browser synthesises a fake bold
+> and the serifs smear. Emphasis in headings comes from size and color, never weight.
+>
+> Gloock is also heavy and tightly spaced, so display type carries its own metrics:
+> letter-spacing around `-0.015em` (not `-0.04em`, which collides the serifs), line-height
+> no tighter than `0.95`, and descender clearance on any `overflow-hidden` clip box
+> (see `SplitText`). Martian Mono is wider than a typical mono — chrome tracking is
+> `0.12em`, not `0.2em`.
 
 ## File structure
 
@@ -107,18 +123,17 @@ pinned sections do not desync the particle field.
 
 | z      | Element                                                             |
 | ------ | ------------------------------------------------------------------- |
-| `0`    | `InversionPanel` — the bone panel that wipes in for the final CTA   |
-| `1`    | `CanvasLayer` — the persistent particle field                        |
+| `0`    | `CanvasLayer` — the persistent particle field                        |
 | `10`   | every section, plus the footer                                       |
 | `40`   | `Hud`                                                                |
-| `50`   | `Preloader`                                                          |
+| `50`   | `Preloader`, and the mobile menu overlay                             |
 
-The bone panel sits *below* the canvas on purpose. A light background painted by
-the Contact section itself would land at z-10 and hide the field completely, and no
-z-index arrangement can put particles above an opaque section background while keeping
-that section's text above the particles. Sections therefore never paint their own
-full-bleed background — dark sections stay transparent over `body`, and the light state
-comes from the panel underneath the canvas.
+Dark sections never paint a background — they stay transparent over `body` so the field
+shows through. The light state belongs to Contact and Footer alone: Contact wipes a bone
+panel that is `absolute inset-0` **inside its own section**, and Footer sets `bg-bone`
+directly. A viewport-fixed panel was tried and reverted — being viewport-sized, it painted
+bone over Impact while Impact was still on screen. The cost of scoping it to the section is
+that particles do not show through the bone; that is the intended trade.
 
 ### Shared layout classes
 

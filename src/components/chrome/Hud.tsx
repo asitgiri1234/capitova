@@ -65,7 +65,7 @@ export default function Hud() {
             scrollToSection("hero");
           }}
           className={cn(
-            "tap-target font-mono text-xs tracking-[0.2em] uppercase",
+            "tap-target font-display text-base tracking-[0.02em]",
             fade,
             inverted ? "text-void" : "text-bone",
           )}
@@ -85,7 +85,7 @@ export default function Hud() {
           aria-expanded={menuOpen}
           aria-haspopup="dialog"
           className={cn(
-            "tap-target font-mono text-xs tracking-[0.2em] uppercase md:hidden",
+            "tap-target font-mono text-xs tracking-[0.12em] uppercase md:hidden",
             fade,
             inverted ? "text-void" : "text-bone",
           )}
@@ -106,7 +106,7 @@ export default function Hud() {
                     scrollToSection(item.id);
                   }}
                   className={cn(
-                    "tap-target font-mono text-[10px] tracking-[0.2em] uppercase",
+                    "tap-target font-mono text-[10px] tracking-[0.12em] uppercase",
                     fade,
                     inverted
                       ? active
@@ -125,7 +125,7 @@ export default function Hud() {
         </ul>
       </nav>
       {/* bottom-left: live scroll readout */}
-      <div className="absolute bottom-6 left-12 hidden font-mono text-[10px] tracking-[0.2em] uppercase md:block">
+      <div className="absolute bottom-6 left-12 hidden font-mono text-[10px] tracking-[0.12em] uppercase md:block">
         <span className={cn(fade, inverted ? "text-void/65" : "text-white/60")}>
           Scroll
         </span>

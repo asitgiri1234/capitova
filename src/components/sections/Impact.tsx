@@ -157,7 +157,7 @@ export default function Impact() {
           <span aria-hidden="true" className="block h-px w-12 bg-mint" />
           04 / Impact
         </p>
-        <h2 className="mt-8 text-[clamp(2.5rem,5vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.03em] text-bone">
+        <h2 className="mt-8 font-display text-[clamp(2.25rem,5vw,3.8rem)] leading-[1.0] tracking-[-0.01em] text-bone">
           Measured, not claimed.
         </h2>
 
@@ -184,7 +184,7 @@ export default function Impact() {
                 className="mt-6 block h-px w-full origin-left bg-mint"
               />
 
-              <div className="mt-6 font-mono text-xs tracking-[0.2em] text-mint uppercase">
+              <div className="mt-6 font-mono text-xs tracking-[0.12em] text-mint uppercase">
                 {stat.label}
               </div>
               <p className="mt-3 text-sm leading-relaxed text-balance text-white/70">
@@ -225,7 +225,7 @@ export default function Impact() {
                   {group.map((partner) => (
                     <span
                       key={partner}
-                      className="flex shrink-0 items-center gap-10 font-mono text-xs tracking-[0.2em] text-white/70 uppercase transition-colors duration-300 group-hover:text-bone"
+                      className="flex shrink-0 items-center gap-10 font-mono text-[10px] tracking-[0.12em] text-white/70 uppercase transition-colors duration-300 group-hover:text-bone"
                     >
                       {partner}
                       <span
