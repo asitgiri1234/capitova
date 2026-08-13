@@ -85,7 +85,15 @@ export default function Odometer({
       aria-live="off"
       className={cn("tabular-nums", className)}
     >
-      <span aria-hidden="true">
+      {/*
+        inline-flex + nowrap: the digits are an inline-block, so a narrow
+        column could otherwise break the line between the value and its
+        suffix ("4.2" above a stranded "M").
+      */}
+      <span
+        aria-hidden="true"
+        className="inline-flex items-baseline whitespace-nowrap"
+      >
         {prefix}
         <span
           className="inline-block text-left tabular-nums"

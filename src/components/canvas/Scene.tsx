@@ -59,7 +59,7 @@ function Rig({
 
     // Reduced motion: framing snaps to the section, no easing, no spin.
     if (reducedMotion) {
-      frameRef.current?.position.setX(composition.x);
+      frameRef.current?.position.set(composition.x, composition.y, 0);
       frameRef.current?.scale.setScalar(composition.scale);
       return;
     }
@@ -67,6 +67,7 @@ function Rig({
     if (frameRef.current) {
       const frame = frameRef.current;
       frame.position.x += (composition.x - frame.position.x) * 0.05;
+      frame.position.y += (composition.y - frame.position.y) * 0.05;
       const scale = frame.scale.x + (composition.scale - frame.scale.x) * 0.05;
       frame.scale.setScalar(scale);
     }

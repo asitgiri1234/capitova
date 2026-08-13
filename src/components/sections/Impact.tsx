@@ -161,7 +161,7 @@ export default function Impact() {
           Measured, not claimed.
         </h2>
 
-        <div className="mt-20 grid grid-cols-1 gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-20 grid grid-cols-1 items-start gap-x-10 gap-y-14 md:grid-cols-2 lg:grid-cols-4">
           {STATS.map((stat) => (
             <div
               key={stat.label}
@@ -169,7 +169,7 @@ export default function Impact() {
               style={{ opacity: reducedMotion ? 1 : 0 }}
               className="min-w-0 border-t border-white/10 pt-6"
             >
-              <div className="text-[clamp(3rem,7vw,6rem)] leading-none font-medium tracking-[-0.05em] text-bone">
+              <div className="flex h-[clamp(2.75rem,5.5vw,5.5rem)] items-baseline whitespace-nowrap text-[clamp(2.75rem,5.5vw,5.5rem)] leading-none font-medium tracking-[-0.05em] text-bone">
                 <Odometer
                   value={stat.value}
                   decimals={stat.decimals ?? 0}
